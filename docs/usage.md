@@ -3,6 +3,27 @@ Usage
 
 This document describes how to use [actionlint](..).
 
+## Workflow concurrency queues
+
+At both workflow and job level, actionlint supports the optional `concurrency.queue` property:
+
+```yaml
+concurrency:
+  group: production-deploy
+  queue: max
+```
+
+`single` (the default) keeps at most one pending job or workflow run, replacing it when another arrives.
+`max` allows up to 100 pending jobs or workflow runs; additional arrivals are canceled when the queue is full.
+These limits do not increase the number of running jobs or workflow runs in the group.
+
+Literal queue values must be `single` or `max`. `queue: max` cannot be combined with literal
+`cancel-in-progress: true`. Expressions are checked with the concurrency contexts available at the workflow or
+job level, but actionlint does not evaluate them to predict queue values or queue/cancellation conflicts at runtime.
+
+See GitHub's [concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency#example-queueing-multiple-pending-runs)
+for details and availability.
+
 ## `actionlint` command
 
 With no argument, actionlint finds all workflow files in the current repository and checks them.

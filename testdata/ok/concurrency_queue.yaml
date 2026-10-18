@@ -1,0 +1,51 @@
+on: push
+
+concurrency:
+  group: workflow-queue
+  queue: ${{ vars.QUEUE || 'single' }}
+  cancel-in-progress: true
+
+jobs:
+  max:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: max
+      queue: max
+    steps:
+      - run: echo max
+  max_no_cancel:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: max-no-cancel
+      cancel-in-progress: false
+      queue: 'max'
+    steps:
+      - run: echo max
+  single_cancel:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: single
+      queue: single
+      cancel-in-progress: true
+    steps:
+      - run: echo single
+  expression_cancel:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: expression-cancel
+      queue: max
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - run: echo expression
+  expression_queue:
+    strategy:
+      matrix:
+        queue: [max, single]
+    runs-on: ubuntu-latest
+    needs: max
+    concurrency:
+      group: expression-queue-${{ matrix.queue }}
+      queue: ${{ needs.max.result == 'success' && matrix.queue || 'single' }}
+      cancel-in-progress: true
+    steps:
+      - run: echo expression
