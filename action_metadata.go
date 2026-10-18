@@ -223,6 +223,7 @@ func (c *LocalActionsCache) debug(format string, args ...interface{}) {
 
 func (c *LocalActionsCache) readCache(key string) (*ActionMetadata, bool) {
 	c.mu.RLock()
+	key, _ = localUsesSpec(key)
 	m, ok := c.cache[key]
 	c.mu.RUnlock()
 	return m, ok
@@ -230,18 +231,20 @@ func (c *LocalActionsCache) readCache(key string) (*ActionMetadata, bool) {
 
 func (c *LocalActionsCache) writeCache(key string, val *ActionMetadata) {
 	c.mu.Lock()
+	key, _ = localUsesSpec(key)
 	c.cache[key] = val
 	c.mu.Unlock()
 }
 
 // FindMetadata finds metadata for given spec. The spec should indicate for local action hence it
-// should start with "./". The first return value can be nil even if error did not occur.
+// should start with "./" or "$/". The first return value can be nil even if error did not occur.
 // LocalActionCache caches that the action was not found. At first search, it returns an error that
 // the action was not found. But at the second search, it does not return an error even if the result
 // is nil. This behavior prevents repeating to report the same error from multiple places.
 // Calling this method is thread-safe.
 func (c *LocalActionsCache) FindMetadata(spec string) (*ActionMetadata, bool, error) {
-	if c.proj == nil || !strings.HasPrefix(spec, "./") {
+	local, ok := localUsesSpec(spec)
+	if c.proj == nil || !ok {
 		return nil, false, nil
 	}
 
@@ -250,7 +253,7 @@ func (c *LocalActionsCache) FindMetadata(spec string) (*ActionMetadata, bool, er
 		return m, true, nil
 	}
 
-	dir := filepath.Join(c.proj.RootDir(), filepath.FromSlash(spec))
+	dir := filepath.Join(c.proj.RootDir(), filepath.FromSlash(local))
 	b, f, ok := c.readLocalActionMetadataFile(dir)
 	if !ok {
 		c.debug("No action metadata found in %s", dir)

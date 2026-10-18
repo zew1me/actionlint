@@ -1,0 +1,13 @@
+on: push
+jobs:
+  empty:
+    uses: $/
+  ref:
+    uses: $/workflows/test.yaml@main
+  missing_path:
+    uses: $/@main
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: $/
+      - uses: $/actions/test@v1

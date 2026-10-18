@@ -328,7 +328,12 @@ func (rule *RuleAction) VisitStep(n *Step) error {
 
 	spec := e.Uses.Value
 
-	if strings.HasPrefix(spec, "./") {
+	if strings.HasPrefix(spec, "$/") && (len(spec) == 2 || strings.ContainsRune(spec, '@')) {
+		rule.Errorf(e.Uses.Pos, "self-repository action reference %q must specify a path and must not include an @ref suffix", spec)
+		return nil
+	}
+
+	if _, ok := localUsesSpec(spec); ok {
 		// Relative to repository root
 		rule.checkLocalAction(spec, e)
 		return nil
