@@ -89,7 +89,7 @@ Install `actionlint` command by downloading [the released binary][releases] or b
 or run via Docker container.
 
 ```sh
-go install github.com/rhysd/actionlint/cmd/actionlint@latest
+go install github.com/zew1me/actionlint/cmd/actionlint@latest
 ```
 
 Basically all you need to do is run the `actionlint` command in your repository. actionlint automatically detects workflows and

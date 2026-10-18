@@ -5,7 +5,7 @@ import (
 	"io"
 	"path/filepath"
 
-	"github.com/rhysd/actionlint"
+	"github.com/zew1me/actionlint"
 )
 
 // A rule type to check every steps have their names.

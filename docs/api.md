@@ -7,7 +7,7 @@ This document describes how to use [actionlint](..) as Go library.
 actionlint can be used from Go programs by importing the module.
 
 ```go
-import "github.com/rhysd/actionlint"
+import "github.com/zew1me/actionlint"
 ```
 
 See [the documentation][apidoc] to know the list of all APIs. It contains

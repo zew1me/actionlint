@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/rhysd/actionlint"
+	"github.com/zew1me/actionlint"
 
 	_ "time/tzdata"
 )
