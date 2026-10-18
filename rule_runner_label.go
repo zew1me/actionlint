@@ -11,6 +11,8 @@ const (
 	compatInvalid                   = 0
 	compatUbuntu2204 runnerOSCompat = 1 << iota
 	compatUbuntu2404
+	compatUbuntu2604
+	compatUbuntu2604Arm
 	compatMacOS140
 	compatMacOS140L
 	compatMacOS140XL
@@ -22,6 +24,8 @@ const (
 	compatMacOS260Intel
 	compatMacOS260L
 	compatMacOS260XL
+	compatMacOS270
+	compatMacOS270XL
 	compatWindows2022
 	compatWindows2025
 	compatWindows2025VS2026
@@ -36,11 +40,14 @@ var allGitHubHostedRunnerLabels = []string{
 	"windows-2025-vs2026",
 	"windows-2022",
 	"windows-11-arm",
+	"windows-11-vs2026-arm",
 	"ubuntu-slim",
 	"ubuntu-latest",
 	"ubuntu-latest-4-cores",
 	"ubuntu-latest-8-cores",
 	"ubuntu-latest-16-cores",
+	"ubuntu-26.04",
+	"ubuntu-26.04-arm",
 	"ubuntu-24.04",
 	"ubuntu-24.04-arm",
 	"ubuntu-22.04",
@@ -48,6 +55,8 @@ var allGitHubHostedRunnerLabels = []string{
 	"macos-latest",
 	"macos-latest-xlarge",
 	"macos-latest-large",
+	"xcode-27",
+	"xcode-27-xlarge",
 	"macos-26-intel",
 	"macos-26-xlarge",
 	"macos-26-large",
@@ -82,6 +91,8 @@ var defaultRunnerOSCompats = map[string]runnerOSCompat{
 	"ubuntu-latest-4-cores":  compatUbuntu2404,
 	"ubuntu-latest-8-cores":  compatUbuntu2404,
 	"ubuntu-latest-16-cores": compatUbuntu2404,
+	"ubuntu-26.04":           compatUbuntu2604,
+	"ubuntu-26.04-arm":       compatUbuntu2604Arm,
 	"ubuntu-24.04":           compatUbuntu2404,
 	"ubuntu-24.04-arm":       compatUbuntu2404,
 	"ubuntu-22.04":           compatUbuntu2204,
@@ -89,6 +100,8 @@ var defaultRunnerOSCompats = map[string]runnerOSCompat{
 	"macos-latest-xlarge":    compatMacOS150XL,
 	"macos-latest-large":     compatMacOS150L,
 	"macos-latest":           compatMacOS150,
+	"xcode-27":               compatMacOS270,
+	"xcode-27-xlarge":        compatMacOS270XL,
 	"macos-26-intel":         compatMacOS260Intel,
 	"macos-26-xlarge":        compatMacOS260XL,
 	"macos-26-large":         compatMacOS260L,
@@ -106,8 +119,9 @@ var defaultRunnerOSCompats = map[string]runnerOSCompat{
 	"windows-2025-vs2026":    compatWindows2025VS2026,
 	"windows-2022":           compatWindows2022,
 	"windows-11-arm":         compatWindows11Arm,
-	"linux":                  compatUbuntu2404 | compatUbuntu2204, // Note: "linux" does not always indicate Ubuntu. It might be Fedora or Arch or ...
-	"macos":                  compatMacOS260 | compatMacOS260Intel | compatMacOS260L | compatMacOS260XL | compatMacOS150 | compatMacOS150Intel | compatMacOS150L | compatMacOS150XL | compatMacOS140 | compatMacOS140L | compatMacOS140XL,
+	"windows-11-vs2026-arm":  compatWindows11Arm,                                                           // windows-11-arm migrated by September 30, 2026.
+	"linux":                  compatUbuntu2604 | compatUbuntu2604Arm | compatUbuntu2404 | compatUbuntu2204, // Note: "linux" does not always indicate Ubuntu. It might be Fedora or Arch or ...
+	"macos":                  compatMacOS270 | compatMacOS270XL | compatMacOS260 | compatMacOS260Intel | compatMacOS260L | compatMacOS260XL | compatMacOS150 | compatMacOS150Intel | compatMacOS150L | compatMacOS150XL | compatMacOS140 | compatMacOS140L | compatMacOS140XL,
 	"windows":                compatWindows2025VS2026 | compatWindows2025 | compatWindows2022 | compatWindows11Arm,
 }
 

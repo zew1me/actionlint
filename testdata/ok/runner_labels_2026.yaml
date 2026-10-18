@@ -1,0 +1,44 @@
+on: push
+jobs:
+  scalar:
+    runs-on: ubuntu-26.04
+    steps:
+      - run: echo hello
+  matrix:
+    strategy:
+      matrix:
+        os: [ubuntu-26.04, ubuntu-26.04-arm, windows-11-vs2026-arm, xcode-27, xcode-27-xlarge]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: echo hello
+  include:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-26.04-arm
+          - os: windows-11-vs2026-arm
+          - os: xcode-27-xlarge
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: echo hello
+  array:
+    runs-on: [linux, ubuntu-26.04-arm, arm64]
+    steps:
+      - run: echo hello
+  group:
+    runs-on:
+      group: apple-runners
+      labels: [macOS, XCODE-27-XLARGE, arm64]
+    steps:
+      - run: echo hello
+  windows_alias:
+    runs-on: [windows, windows-11-arm, windows-11-vs2026-arm, arm64]
+    steps:
+      - run: echo hello
+  retained_images:
+    strategy:
+      matrix:
+        os: [macos-14, macos-14-large, macos-14-xlarge]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: echo hello

@@ -342,6 +342,93 @@ func TestRuleRunnerLabelCheckLabels(t *testing.T) {
 	}
 }
 
+func TestRuleRunnerLabel2026Images(t *testing.T) {
+	images := []struct {
+		label string
+		os    string
+	}{
+		{"ubuntu-26.04", "linux"},
+		{"ubuntu-26.04-arm", "linux"},
+		{"windows-11-vs2026-arm", "windows"},
+		{"xcode-27", "macos"},
+		{"xcode-27-xlarge", "macos"},
+	}
+	for _, image := range images {
+		t.Run(image.label, func(t *testing.T) {
+			for _, os := range []string{"linux", "windows", "macos"} {
+				rule := NewRuleRunnerLabel()
+				job := &Job{RunsOn: &Runner{Labels: []*String{
+					{Value: os, Pos: &Pos{}},
+					{Value: strings.ToUpper(image.label), Pos: &Pos{}},
+				}}}
+				if err := rule.VisitJobPre(job); err != nil {
+					t.Fatal(err)
+				}
+				want := 1
+				if os == image.os {
+					want = 0
+				}
+				if errs := rule.Errs(); len(errs) != want {
+					t.Errorf("OS %s: want %d errors, got %v", os, want, errs)
+				} else if want == 1 && !strings.Contains(errs[0].Message, "conflicts with label") {
+					t.Errorf("expected conflict, got %v", errs)
+				}
+			}
+		})
+	}
+
+	for _, labels := range [][]string{
+		{"ubuntu-26.04", "ubuntu-26.04-arm"}, // x64 and arm64 are different images
+		{"ubuntu-26.04", "ubuntu-24.04"},
+		{"ubuntu-26.04-arm", "ubuntu-22.04-arm"},
+		{"ubuntu-26.04", "ubuntu-latest"}, // migration starts October 19, after cutoff
+		{"windows-11-vs2026-arm", "windows-2025-vs2026"},
+		{"xcode-27", "macos-26"}, // now macOS 27, not the preview's original macOS 26
+		{"xcode-27", "macos-26-intel"},
+		{"xcode-27-xlarge", "macos-26-xlarge"},
+		{"xcode-27-xlarge", "macos-15-intel"},
+		{"xcode-27", "xcode-27-xlarge"}, // distinct runner sizes
+	} {
+		t.Run(strings.Join(labels, "/"), func(t *testing.T) {
+			rule := NewRuleRunnerLabel()
+			job := &Job{RunsOn: &Runner{Labels: []*String{
+				{Value: labels[0], Pos: &Pos{}},
+				{Value: labels[1], Pos: &Pos{}},
+			}}}
+			if err := rule.VisitJobPre(job); err != nil {
+				t.Fatal(err)
+			}
+			if errs := rule.Errs(); len(errs) != 1 || !strings.Contains(errs[0].Message, "conflicts with label") {
+				t.Fatalf("expected one conflict, got %v", errs)
+			}
+		})
+	}
+}
+
+// Keep lifecycle changes outside the October 18 cutoff out of this data update.
+func TestRuleRunnerLabel2026Cutoff(t *testing.T) {
+	for label, want := range map[string]runnerOSCompat{
+		"ubuntu-latest":          compatUbuntu2404,
+		"ubuntu-latest-4-cores":  compatUbuntu2404,
+		"ubuntu-latest-8-cores":  compatUbuntu2404,
+		"ubuntu-latest-16-cores": compatUbuntu2404,
+		"windows-latest":         compatWindows2022,
+		"windows-latest-8-cores": compatWindows2022,
+		"macos-latest":           compatMacOS150,
+		"macos-latest-large":     compatMacOS150L,
+		"macos-latest-xlarge":    compatMacOS150XL,
+		"macos-14":               compatMacOS140,
+		"macos-14-large":         compatMacOS140L,
+		"macos-14-xlarge":        compatMacOS140XL,
+		"windows-11-vs2026-arm":  compatWindows11Arm,
+		"windows-11-arm":         compatWindows11Arm,
+	} {
+		if got := defaultRunnerOSCompats[label]; got != want {
+			t.Errorf("%s: want compatibility %d, got %d", label, want, got)
+		}
+	}
+}
+
 func TestRuleRunnerLabelDoNothingOnNoRunsOn(t *testing.T) {
 	rule := NewRuleRunnerLabel()
 	if err := rule.VisitJobPre(&Job{}); err != nil {
