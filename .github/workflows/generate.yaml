@@ -15,7 +15,9 @@ on:
 
 jobs:
   go-generate:
-    if: ${{ github.repository == 'rhysd/actionlint' }}
+    # Opt-in in the fork: it was disabled here (the condition only matched upstream). Set the repository variable
+    # ENABLE_GENERATE_PR=true to let it open weekly PRs against this repository.
+    if: ${{ github.repository == 'zew1me/actionlint' && vars.ENABLE_GENERATE_PR == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -46,7 +48,7 @@ jobs:
           title: 'Update generated files by CI'
           body: |
             This PR updates some generated files to the latest by running `go generate`.
-            This PR was created by [this workflow run](https://github.com/rhysd/actionlint/actions/runs/${{ github.run_id }}) automatically.
-            List of workflow runs is [here](https://github.com/rhysd/actionlint/actions/workflows/generate.yaml).
-          assignees: rhysd
+            This PR was created by [this workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) automatically.
+            List of workflow runs is [here](${{ github.server_url }}/${{ github.repository }}/actions/workflows/generate.yaml).
+          assignees: zew1me
         if: ${{ steps.diff.outputs.pr == 'true' }}

@@ -4,8 +4,16 @@ on:
     tags:
       - "v*.*.*"
 
+env:
+  # Package/distribution identity of this fork. Default name; change it here (and in .goreleaser.yaml `project_name` and
+  # scripts/download-actionlint.bash `package_name`). The command name stays `actionlint`.
+  PACKAGE_NAME: actionlint-zew1me
+
+# Publishing safety: every job only runs in zew1me/actionlint and only publishes to destinations owned by it (GitHub
+# releases/Casks of this repository, ghcr.io/zew1me). Nothing here uses upstream's (rhysd) Docker Hub, winget or tap.
 jobs:
   binaries:
+    if: ${{ github.repository == 'zew1me/actionlint' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,7 +40,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/attest-build-provenance@v4
         with:
-          subject-checksums: ${{ format('./dist/actionlint_{0}_checksums.txt', env.VERSION) }}
+          subject-checksums: ${{ format('./dist/{0}_{1}_checksums.txt', env.PACKAGE_NAME, env.VERSION) }}
       - name: Post-release download check
         run: bash ./scripts/download-actionlint.bash "$VERSION"
       - name: Clone nested repository to make version bump commit
@@ -51,18 +59,16 @@ jobs:
           git -c user.email='41898282+github-actions[bot]@users.noreply.github.com' -c user.name='github-actions[bot]' commit -m "update version to $VERSION in download-actionlint.bash"
           git log -n 1
           git push
-  winget:
-    runs-on: ubuntu-latest
-    needs: binaries
-    steps:
-      - uses: vedantmgoyal9/winget-releaser@main
-        with:
-          identifier: rhysd.actionlint
-          installers-regex: '_windows_\w+\.zip$'
-          release-notes-url: 'https://github.com/rhysd/actionlint/blob/main/CHANGELOG.md#${{ github.ref_name }}'
-          token: ${{ secrets.WINGET_TOKEN }}
+  # The `winget` job of upstream was REMOVED in this fork. Its identifier `rhysd.actionlint` belongs to upstream's package in
+  # microsoft/winget-pkgs, so running winget-releaser here would open a PR against upstream's package. To publish the fork to
+  # winget, register a new fork-specific identifier (e.g. zew1me.actionlint-zew1me), create a WINGET_TOKEN secret, and add a
+  # job gated with `if: github.repository == 'zew1me/actionlint'` that uses that identifier.
   docker:
+    if: ${{ github.repository == 'zew1me/actionlint' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v6
       - name: Get tag name
@@ -74,11 +80,12 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v4
-      - name: Login to DockerHub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v4
         with:
-          username: rhysd
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -88,5 +95,5 @@ jobs:
             ACTIONLINT_VER=${{ steps.tag.outputs.name }}
           push: true
           tags: |
-            rhysd/actionlint:${{ steps.tag.outputs.name }}
-            rhysd/actionlint:latest
+            ghcr.io/zew1me/${{ env.PACKAGE_NAME }}:${{ steps.tag.outputs.name }}
+            ghcr.io/zew1me/${{ env.PACKAGE_NAME }}:latest

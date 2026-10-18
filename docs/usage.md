@@ -236,7 +236,7 @@ shellcheck is [pre-installed on Ubuntu worker][preinstall-ubuntu].
 If you want to [annotate errors][ga-annotate-error] from actionlint on GitHub, consider using
 [Problem Matchers](#problem-matchers).
 
-If you prefer Docker image to running a downloaded executable, using [actionlint Docker image](#docker) is another option.
+If you prefer Docker image to running a downloaded executable, using [the actionlint Docker image of this fork](#docker) is another option.
 
 ```yaml
 name: Lint GitHub Actions workflows
@@ -307,6 +307,11 @@ Go APIs are available. See [the Go API document](api.md) for more details.
 
 <a id="tools-integ"></a>
 ## Tools integration
+
+> [!NOTE]
+> Third-party integrations below (reviewdog, super-linter, VS Code, trunk, ...) are maintained by other projects and install or
+> run **upstream** actionlint, not this fork, unless they can be pointed at the `actionlint` executable of this fork. The
+> `pre-commit` hooks and the Problem Matchers of this repository work with this fork.
 
 ### reviewdog
 

@@ -23,6 +23,13 @@ if [[ "$(git rev-parse --abbrev-ref HEAD)" != main ]]; then
     exit 1
 fi
 
+# Publishing safety: this script pushes a commit and a release tag. Never let it push to anything but this fork.
+origin_url="$(git remote get-url origin)"
+if [[ ! "$origin_url" =~ [:/]zew1me/actionlint(\.git)?/?$ ]]; then
+    echo "Refusing to bump: 'origin' is '${origin_url}', expected a zew1me/actionlint remote" >&2
+    exit 1
+fi
+
 version="$1"
 
 if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -45,7 +52,7 @@ function sed_() {
 pre_commit_hook='./.pre-commit-hooks.yaml'
 usage_doc='./docs/usage.md'
 tag="v${version}"
-job_url='https://github.com/rhysd/actionlint/actions/workflows/release.yaml'
+job_url='https://github.com/zew1me/actionlint/actions/workflows/release.yaml'
 playground_html='./playground/index.html'
 readme_doc='./README.md'
 man_ronn='./man/actionlint.1.ronn'
@@ -54,24 +61,24 @@ echo "Bumping up version to ${version} (tag: ${tag})"
 
 # Update container image tag in pre-commit hook (See #116 for more details)
 echo "Updating $pre_commit_hook"
-sed_ "s/entry: docker\\.io\\/rhysd\\/actionlint:.*/entry: docker.io\\/rhysd\\/actionlint:${version}/" "$pre_commit_hook"
+sed_ "s/entry: ghcr\\.io\\/zew1me\\/actionlint-zew1me:.*/entry: ghcr.io\\/zew1me\\/actionlint-zew1me:${version}/" "$pre_commit_hook"
 
 echo "Updating $usage_doc"
 sed_ "\
-    s/    rev: v[0-9]+\.[0-9]+\.[0-9]+/    rev: v${version}/; \
+    s/    rev: (v[0-9]+\.[0-9]+\.[0-9]+|main).*/    rev: v${version}/; \
     s/ actionlint@[0-9]+\.[0-9]+\.[0-9]+/ actionlint@${version}/g; \
-    s/\`actionlint:[0-9]+\.[0-9]+\.[0-9]+\`/\`actionlint:${version}\`/g; \
+    s/\`actionlint-zew1me:[0-9]+\.[0-9]+\.[0-9]+\`/\`actionlint-zew1me:${version}\`/g; \
     " "$usage_doc"
 
 echo "Updating $playground_html"
 sed_ "\
-    s/rhysd\/actionlint\/releases\/tag\/v[0-9]+\.[0-9]+\.[0-9]+/rhysd\/actionlint\/releases\/tag\/v${version}/; \
+    s/zew1me\/actionlint\/releases\/tag\/v[0-9]+\.[0-9]+\.[0-9]+/zew1me\/actionlint\/releases\/tag\/v${version}/; \
     s/id=\"version\">v[0-9]+\.[0-9]+\.[0-9]+/id=\"version\">v${version}/; \
     " "$playground_html"
 
 for f in "$readme_doc" "$man_ronn" "$playground_html"; do
     echo "Updating document links in $f"
-    sed_ "s/\/rhysd\/actionlint\/blob\/v[0-9]+\.[0-9]+\.[0-9]+\/docs\//\/rhysd\/actionlint\/blob\/v${version}\/docs\//g" "$f"
+    sed_ "s/\/zew1me\/actionlint\/blob\/(v[0-9]+\.[0-9]+\.[0-9]+|main)\/docs\//\/zew1me\/actionlint\/blob\/v${version}\/docs\//g" "$f"
 done
 
 echo 'Creating a version bump commit and a version tag'

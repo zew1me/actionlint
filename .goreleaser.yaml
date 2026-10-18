@@ -1,8 +1,18 @@
 version: 2
 
+# Package/distribution identity of this fork. This is the single place to change the default name `actionlint-zew1me`.
+# It drives the release archive names (`{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}`), the checksum file and the
+# Homebrew cask name. The command name stays `actionlint` (see `binary:` below) so that it is a drop-in replacement.
+# The same name is used in .github/workflows/release.yaml (PACKAGE_NAME) and scripts/download-actionlint.bash (package_name).
+project_name: actionlint-zew1me
+
 release:
   draft: false
   prerelease: true
+  # Never publish releases anywhere but this fork
+  github:
+    owner: zew1me
+    name: actionlint
 
 before:
   hooks:
@@ -11,6 +21,7 @@ before:
 builds:
   - <<: &build_defaults
       main: ./cmd/actionlint
+      binary: actionlint
       ldflags: -s -w -X github.com/zew1me/actionlint.version={{.Version}} -X "github.com/zew1me/actionlint.installedFrom=installed by downloading from release page"
       env:
         - CGO_ENABLED=0
@@ -34,7 +45,7 @@ builds:
     goarch: [386, amd64]
 
 checksum:
-  name_template: "actionlint_{{.Version}}_checksums.txt"
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
   algorithm: sha256
 
 archives:
@@ -53,16 +64,19 @@ archives:
     formats: [zip]
 
 homebrew_casks:
-  - name: actionlint
+  - name: "{{ .ProjectName }}"
     directory: Casks
     binaries: [actionlint]
     manpages: [man/actionlint.1]
-    homepage: https://github.com/rhysd/actionlint#readme
+    homepage: https://github.com/zew1me/actionlint#readme
+    # The executable is still named `actionlint`, so it conflicts with upstream's cask
+    conflicts:
+      - cask: actionlint
     description: Static checker for GitHub Actions workflow files
     dependencies:
       - formula: shellcheck
     repository:
-      owner: rhysd
+      owner: zew1me
       name: actionlint
     commit_author:
       name: 'github-actions[bot]'

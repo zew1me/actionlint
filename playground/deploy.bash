@@ -7,6 +7,13 @@ if [ ! -d .git ]; then
     exit 1
 fi
 
+# Publishing safety: the playground may only be deployed to this fork's gh-pages branch, never to upstream's.
+origin_url="$(git remote get-url origin)"
+if [[ ! "$origin_url" =~ [:/]zew1me/actionlint(\.git)?/?$ ]]; then
+    echo "Refusing to deploy: 'origin' is '${origin_url}', expected a zew1me/actionlint remote" 1>&2
+    exit 1
+fi
+
 echo "Ensuring gh-pages branch is up-to-date"
 git fetch -u origin gh-pages:gh-pages
 

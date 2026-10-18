@@ -2,13 +2,19 @@
 
 set -e -o pipefail
 
+# Package/distribution identity of this fork (default name; change here only). Release archives are named
+# "${package_name}_{version}_{os}_{arch}.{ext}". The executable inside is still named "actionlint".
+# Keep in sync with project_name in .goreleaser.yaml and PACKAGE_NAME in .github/workflows/release.yaml.
+package_name="actionlint-zew1me"
+repository="zew1me/actionlint"
+
 function usage() {
     echo 'USAGE:' >&2
     echo '  bash download-actionlint.bash [[VERSION] DIR]' >&2
     echo >&2
-    echo 'This script downloads actionlint binary from the following release page. curl' >&2
+    echo 'This script downloads actionlint binary of the zew1me fork from the following release page. curl' >&2
     echo 'command is required as dependency' >&2
-    echo 'https://github.com/rhysd/actionlint/releases' >&2
+    echo "https://github.com/${repository}/releases" >&2
     echo >&2
     echo 'DIR:' >&2
     echo '  Directory to put the downloaded binary (e.g. /path/to/dir). When this value is' >&2
@@ -109,9 +115,9 @@ esac
 
 echo "Detected OS=${os} ext=${ext} arch=${arch}"
 
-# https://github.com/rhysd/actionlint/releases/download/v1.0.0/actionlint_1.0.0_linux_386.tar.gz
-file="actionlint_${version}_${os}_${arch}.${ext}"
-url="https://github.com/rhysd/actionlint/releases/download/v${version}/${file}"
+# https://github.com/zew1me/actionlint/releases/download/v1.0.0/actionlint-zew1me_1.0.0_linux_386.tar.gz
+file="${package_name}_${version}_${os}_${arch}.${ext}"
+url="https://github.com/${repository}/releases/download/v${version}/${file}"
 
 echo "Downloading ${url} with curl"
 

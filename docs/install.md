@@ -79,7 +79,7 @@ brew install actionlint
 
 This repository provides its own Homebrew cask named `actionlint-zew1me`, which is generated on new releases of this fork.
 Tap the repository and install the cask with `--cask` option. The cask installs the `actionlint` executable, so it conflicts
-with the upstream `actionlint` formula and cask.
+with upstream's `actionlint` cask. Uninstall the upstream `actionlint` formula first, otherwise both link the same executable.
 
 ```sh
 brew tap "zew1me/actionlint" "https://github.com/zew1me/actionlint"

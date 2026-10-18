@@ -13,6 +13,9 @@ on:
 jobs:
   download:
     name: Test download script
+    # The script downloads release archives of this fork, which do not exist until the fork publishes its first release.
+    # Set the repository variable FORK_HAS_RELEASES=true after that to enable this job.
+    if: ${{ vars.FORK_HAS_RELEASES == 'true' }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
