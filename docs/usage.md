@@ -41,16 +41,28 @@ Use a matrix to run on multiple images, rather than putting incompatible images 
 The Xcode labels are not Intel images, and the standard and xlarge labels select distinct runner sizes.
 `windows-11-arm` and `windows-11-vs2026-arm` are compatible: the former completed its migration by September 30.
 
-This update leaves existing `latest` aliases unchanged. In particular, `ubuntu-latest` still maps to Ubuntu 24.04;
-its migration starts October 19, after this update's cutoff. The `macos-14`, `macos-14-large`, and
-`macos-14-xlarge` labels remain accepted; their announced November 2 retirement is also outside the cutoff.
+`-latest` aliases follow migrations GitHub completed by the cutoff, so they conflict with labels for older images:
+
+| Label | Image |
+|-------|-------|
+| `macos-latest` | macOS 26 arm64 (same as `macos-26`) |
+| `macos-latest-xlarge` | macOS 26 arm64 larger runner (same as `macos-26-xlarge`) |
+| `macos-latest-large` | macOS 26 Intel larger runner (same as `macos-26-large`) |
+| `windows-latest`, `windows-latest-8-cores` | Windows Server 2025 with Visual Studio 2026 (same as `windows-2025-vs2026`) |
+
+`ubuntu-latest` still maps to Ubuntu 24.04; its migration to 26.04 runs from October 19 to November 19, after this
+update's cutoff. The `macos-14`, `macos-14-large`, and `macos-14-xlarge` labels remain accepted; their announced
+November 2 retirement is also outside the cutoff.
 
 Official announcements: [new Ubuntu and Windows images](https://github.blog/changelog/2026-06-11-new-runner-images-in-public-preview),
 [Ubuntu GA and migration dates](https://github.blog/changelog/2026-09-17-ubuntu-26-generally-available-and-latest-migration),
 [Windows migration dates](https://github.blog/changelog/2026-08-20-windows-11-arm64-vs2026-image-generally-available),
 [Xcode's move to macOS 27](https://github.blog/changelog/2026-09-10-xcode-27-runner-image-now-runs-on-macos-27),
-[Xcode GA and architecture](https://github.blog/changelog/2026-10-15-xcode-27-runner-image-generally-available), and
-[macOS 14 retirement notice](https://github.blog/changelog/2026-10-01-github-actions-macos-14-runner-image-retirement).
+[Xcode GA and architecture](https://github.blog/changelog/2026-10-15-xcode-27-runner-image-generally-available),
+[macOS 14 retirement notice](https://github.blog/changelog/2026-10-01-github-actions-macos-14-runner-image-retirement),
+[`macos-latest` and `windows-latest` migrations](https://github.blog/changelog/2026-05-14-github-actions-upcoming-image-migrations/),
+[`macos-latest` migration completed](https://github.com/actions/runner-images/issues/14167), and
+[current `-latest` label assignments](https://github.com/actions/runner-images#available-images).
 
 ### Ignore some errors
 

@@ -40,11 +40,11 @@ func TestRuleRunnerLabelCheckLabels(t *testing.T) {
 		},
 		{
 			what:   "self-hosted all macOS runner labels",
-			labels: []string{"self-hosted", "macOS", "macOS-latest", "macOS-15"},
+			labels: []string{"self-hosted", "macOS", "macOS-latest", "macOS-26"},
 		},
 		{
 			what:   "self-hosted all Windows runner labels",
-			labels: []string{"self-hosted", "windows", "windows-latest", "windows-2022"},
+			labels: []string{"self-hosted", "windows", "windows-latest", "windows-2025-vs2026"},
 		},
 		{
 			what:   "self-hosted Linux runner in upper case",
@@ -76,11 +76,19 @@ func TestRuleRunnerLabelCheckLabels(t *testing.T) {
 		},
 		{
 			what:   "multiple labels for GH-hosted Windows runner",
-			labels: []string{"windows-latest", "windows-2022"},
+			labels: []string{"windows-latest", "windows-2025-vs2026"},
 		},
 		{
 			what:   "multiple labels for GH-hosted macOS runner",
-			labels: []string{"macos-latest", "macos-15"},
+			labels: []string{"macos-latest", "macos-26"},
+		},
+		{
+			what:   "multiple labels for GH-hosted macOS XL runner",
+			labels: []string{"macos-latest-xlarge", "macos-26-xlarge"},
+		},
+		{
+			what:   "multiple labels for GH-hosted macOS large runner",
+			labels: []string{"macos-latest-large", "macos-26-large"},
 		},
 		{
 			what:   "user-defined labels",
@@ -249,6 +257,21 @@ func TestRuleRunnerLabelCheckLabels(t *testing.T) {
 			errs:   []string{`label "windows-2022" conflicts with label "windows-2025"`},
 		},
 		{
+			what:   "macos-latest no longer points to macOS 15",
+			labels: []string{"macos-latest", "macos-15"},
+			errs:   []string{`label "macos-15" conflicts with label "macos-latest"`},
+		},
+		{
+			what:   "macos-latest-xlarge no longer points to macOS 15",
+			labels: []string{"macos-latest-xlarge", "macos-15-xlarge"},
+			errs:   []string{`label "macos-15-xlarge" conflicts with label "macos-latest-xlarge"`},
+		},
+		{
+			what:   "windows-latest no longer points to Windows Server 2022",
+			labels: []string{"windows-latest", "windows-2022"},
+			errs:   []string{`label "windows-2022" conflicts with label "windows-latest"`},
+		},
+		{
 			what:   "Linux labels architecture conflict",
 			labels: []string{"ubuntu-24.04", "ubuntu-22.04"},
 			errs:   []string{`label "ubuntu-22.04" conflicts with label "ubuntu-24.04"`},
@@ -405,18 +428,19 @@ func TestRuleRunnerLabel2026Images(t *testing.T) {
 	}
 }
 
-// Keep lifecycle changes outside the October 18 cutoff out of this data update.
+// Follow `-latest` migrations completed by the October 18 cutoff, and keep lifecycle changes
+// scheduled after it (ubuntu-latest moving to 26.04, macOS 14 retirement) out of this data update.
 func TestRuleRunnerLabel2026Cutoff(t *testing.T) {
 	for label, want := range map[string]runnerOSCompat{
 		"ubuntu-latest":          compatUbuntu2404,
 		"ubuntu-latest-4-cores":  compatUbuntu2404,
 		"ubuntu-latest-8-cores":  compatUbuntu2404,
 		"ubuntu-latest-16-cores": compatUbuntu2404,
-		"windows-latest":         compatWindows2022,
-		"windows-latest-8-cores": compatWindows2022,
-		"macos-latest":           compatMacOS150,
-		"macos-latest-large":     compatMacOS150L,
-		"macos-latest-xlarge":    compatMacOS150XL,
+		"windows-latest":         compatWindows2025VS2026, // windows-2025 with VS2026 since June 15, 2026
+		"windows-latest-8-cores": compatWindows2025VS2026,
+		"macos-latest":           compatMacOS260, // migration to macOS 26 completed July 22, 2026
+		"macos-latest-large":     compatMacOS260L,
+		"macos-latest-xlarge":    compatMacOS260XL,
 		"macos-14":               compatMacOS140,
 		"macos-14-large":         compatMacOS140L,
 		"macos-14-xlarge":        compatMacOS140XL,
