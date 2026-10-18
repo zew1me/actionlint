@@ -1,0 +1,22 @@
+name: Workflow identity and artifact files
+on: workflow_call
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      workflow: ${{ job.workflow_ref }}
+      sha: ${{ job.workflow_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
+      - run: |
+          printf '%s\n' "$WORKFLOW_REF" "$WORKFLOW_PATH"
+          printf '%s\n' 'dist/package.tgz' >> "$ARTIFACTS"
+          jq . "$ARTIFACTS_LIST"
+        env:
+          WORKFLOW_REF: ${{ job.workflow_ref }}
+          WORKFLOW_PATH: ${{ job.workflow_file_path }}
+          ARTIFACTS: ${{ github.artifacts }}
+          ARTIFACTS_LIST: ${{ github.artifacts_list }}
