@@ -25,49 +25,6 @@ cat path/to/workflow.yaml | actionlint -
 
 To know all flags and options, see an output of `actionlint -h` or [the online command manual][cmd-manual].
 
-### Hosted runner images (October 18, 2026)
-
-The `runner-label` check recognizes these additional `runs-on` labels:
-
-| Label | OS | Architecture |
-|-------|----|--------------|
-| `ubuntu-26.04` | Ubuntu 26.04 | x64 |
-| `ubuntu-26.04-arm` | Ubuntu 26.04 | arm64 |
-| `windows-11-vs2026-arm` | Windows 11, Visual Studio 2026 | arm64 |
-| `xcode-27` | macOS 27, Xcode 27 | arm64 |
-| `xcode-27-xlarge` | macOS 27, Xcode 27 (larger runner) | arm64 |
-
-Use a matrix to run on multiple images, rather than putting incompatible images in a single `runs-on` array.
-The Xcode labels are not Intel images, and the standard and xlarge labels select distinct runner sizes.
-`ubuntu-26.04` and `ubuntu-26.04-arm` conflict, because a job cannot run on x64 and arm64 at once. This matches the
-existing Intel/Arm macOS and `windows-11-arm` checks. `ubuntu-24.04-arm` and `ubuntu-22.04-arm` are unchanged and do
-not yet conflict with their x64 labels.
-`windows-11-arm` and `windows-11-vs2026-arm` also conflict. GitHub planned to move `windows-11-arm` to Visual Studio 2026
-by September 30, but has not confirmed that the move is complete, and still documents them as separate images.
-
-`-latest` aliases follow migrations GitHub completed by the cutoff, so they conflict with labels for older images:
-
-| Label | Image |
-|-------|-------|
-| `macos-latest` | macOS 26 arm64 (same as `macos-26`) |
-| `macos-latest-xlarge` | macOS 26 arm64 larger runner (same as `macos-26-xlarge`) |
-| `macos-latest-large` | macOS 26 Intel larger runner (same as `macos-26-large`) |
-| `windows-latest`, `windows-latest-8-cores` | Windows Server 2025 with Visual Studio 2026 (same as `windows-2025-vs2026`) |
-
-`ubuntu-latest` still maps to Ubuntu 24.04; its migration to 26.04 runs from October 19 to November 19, after this
-update's cutoff. The `macos-14`, `macos-14-large`, and `macos-14-xlarge` labels remain accepted; their announced
-November 2 retirement is also outside the cutoff.
-
-Official announcements: [new Ubuntu and Windows images](https://github.blog/changelog/2026-06-11-new-runner-images-in-public-preview),
-[Ubuntu GA and migration dates](https://github.blog/changelog/2026-09-17-ubuntu-26-generally-available-and-latest-migration),
-[Windows migration dates](https://github.blog/changelog/2026-08-20-windows-11-arm64-vs2026-image-generally-available),
-[Xcode's move to macOS 27](https://github.blog/changelog/2026-09-10-xcode-27-runner-image-now-runs-on-macos-27),
-[Xcode GA and architecture](https://github.blog/changelog/2026-10-15-xcode-27-runner-image-generally-available),
-[macOS 14 retirement notice](https://github.blog/changelog/2026-10-01-github-actions-macos-14-runner-image-retirement),
-[`macos-latest` and `windows-latest` migrations](https://github.blog/changelog/2026-05-14-github-actions-upcoming-image-migrations/),
-[`macos-latest` migration completed](https://github.com/actions/runner-images/issues/14167), and
-[current `-latest` label assignments](https://github.com/actions/runner-images#available-images).
-
 ### Ignore some errors
 
 To ignore some errors, `-ignore` option offers to filter errors by messages using regular expression. The option is repeatable.
