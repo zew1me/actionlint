@@ -1,0 +1,25 @@
+on: push
+cache-mode: &mode read
+jobs:
+  inherited:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo inherited
+  read:
+    cache-mode: *mode
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo read
+  write:
+    cache-mode: write
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo write
+  write_only:
+    cache-mode: write-only
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo write-only
+  none:
+    cache-mode: none
+    uses: owner/repo/.github/workflows/test.yaml@main
