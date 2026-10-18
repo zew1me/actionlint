@@ -328,8 +328,8 @@ func (rule *RuleAction) VisitStep(n *Step) error {
 
 	spec := e.Uses.Value
 
-	if strings.HasPrefix(spec, "$/") && (len(spec) == 2 || strings.ContainsRune(spec, '@')) {
-		rule.Errorf(e.Uses.Pos, "self-repository action reference %q must specify a path and must not include an @ref suffix", spec)
+	if strings.HasPrefix(spec, "$/") && strings.ContainsRune(spec, '@') {
+		rule.Errorf(e.Uses.Pos, "self-repository action reference %q must not include an @ref suffix", spec)
 		return nil
 	}
 

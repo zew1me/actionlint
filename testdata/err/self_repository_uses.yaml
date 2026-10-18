@@ -9,5 +9,4 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: $/
       - uses: $/actions/test@v1
