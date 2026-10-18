@@ -35,6 +35,7 @@ List of checks:
 - [Hardcoded credentials](#check-hardcoded-credentials)
 - [Environment variable names](#check-env-var-names)
 - [Permissions](#permissions)
+- [Cache access modes](#cache-access-modes)
 - [Reusable workflows](#check-reusable-workflows)
 - [ID naming convention](#id-naming-convention)
 - [Availability of contexts and special functions](#ctx-spfunc-availability)
@@ -2155,6 +2156,47 @@ Each permission scopes have their access levels. The default levels and availabl
 [the document][permissions-doc].
 
 actionlint checks permission scopes and access levels in a workflow are correct.
+
+<a id="cache-access-modes"></a>
+## Cache access modes
+
+Example input:
+
+```yaml
+on: push
+cache-mode: read-write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo test
+```
+
+Output:
+
+```
+test.yaml:2:13: "read-write" is invalid for cache-mode. available values are "read", "write", "write-only", "none" [syntax-check]
+  |
+2 | cache-mode: read-write
+  |             ^~~~~~~~~~
+```
+
+<!-- Skip playground link -->
+
+At workflow level and job level (including jobs calling reusable workflows), actionlint validates
+[`cache-mode`](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#cache-mode)
+as one of four literal values:
+
+- `read`: restore caches, but do not save them.
+- `write`: restore and save caches.
+- `write-only`: save caches, but do not restore them.
+- `none`: neither restore nor save caches.
+
+Quoted values and YAML aliases are supported. Empty values, mappings, sequences, and expressions are rejected.
+A job-level setting overrides the workflow-level setting; it is not restricted to reducing access.
+Omitted settings are preserved without inferring trigger-dependent defaults. actionlint does not calculate effective
+cache access across reusable workflow calls or flag cache-poisoning risks from enabling writes on low-trust triggers.
+GitHub enforces the effective access at runtime; a disallowed cache operation is skipped rather than failing the job.
 
 <a id="check-reusable-workflows"></a>
 ## Reusable workflows
