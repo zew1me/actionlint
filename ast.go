@@ -400,6 +400,9 @@ type Concurrency struct {
 	Group *String
 	// CancelInProgress is a flag that shows if canceling this workflow cancels other jobs in progress.
 	CancelInProgress *Bool
+	// Queue controls pending jobs or workflow runs: "single" (default) or "max".
+	// It may also contain expressions. Nil means the default queue behavior.
+	Queue *String
 	// Pos is a position in source.
 	Pos *Pos
 }

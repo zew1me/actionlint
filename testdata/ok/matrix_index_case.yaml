@@ -1,0 +1,17 @@
+on: push
+jobs:
+  test:
+    strategy:
+      matrix:
+        OS: [ubuntu-latest]
+        Target:
+          - Enabled: true
+            Version: 1
+    runs-on: ${{ matrix['OS'] }}
+    steps:
+      - if: matrix['TaRgEt']['EnAbLeD']
+        run: echo "$VERSION"
+        env:
+          VERSION: ${{ matrix['TARGET']['VERSION'] }}
+          STATUS: ${{ job['STATUS'] }}
+          REPO: ${{ github['REPOSITORY'] }}

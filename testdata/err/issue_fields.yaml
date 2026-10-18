@@ -1,0 +1,10 @@
+on:
+  issues:
+    types: [field_changed, field_deleted]
+  pull_request:
+    types: [field_added, field_removed]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo test

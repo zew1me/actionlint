@@ -1,0 +1,50 @@
+on: push
+
+concurrency:
+  group: workflow-queue
+  queue: ${{ needs.build.outputs.queue }}
+
+jobs:
+  conflict:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: conflict
+      queue: max
+      cancel-in-progress: true
+    steps:
+      - run: echo conflict
+  invalid_literal:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: literal
+      queue: Max
+    steps:
+      - run: echo literal
+  invalid_context:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: context
+      queue: ${{ secrets.QUEUE }}
+    steps:
+      - run: echo context
+  invalid_function:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: function
+      queue: ${{ hashFiles('queue') }}
+    steps:
+      - run: echo function
+  invalid_syntax:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: syntax
+      queue: ${{ vars. }}
+    steps:
+      - run: echo syntax
+  invalid_template_type:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: type
+      queue: ${{ github.event }}
+    steps:
+      - run: echo type

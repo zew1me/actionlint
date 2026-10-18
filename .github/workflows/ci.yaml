@@ -29,8 +29,19 @@ jobs:
           pyflakes --version
         if: ${{ runner.os == 'Linux' }}
       - name: Install dependencies on Windows
+        shell: pwsh
         run: |
-          winget install --id koalaman.shellcheck --disable-interactivity --accept-package-agreements --accept-source-agreements
+          # winget is not available on the windows-11-arm image, so download the official release zip instead.
+          # The zip only contains an x64 binary, which runs under emulation on Arm.
+          $version = 'v0.11.0'
+          $sha256 = '8a4e35ab0b331c85d73567b12f2a444df187f483e5079ceffa6bda1faa2e740e'
+          $dir = Join-Path $env:RUNNER_TEMP 'shellcheck'
+          $zip = Join-Path $env:RUNNER_TEMP "shellcheck-$version.zip"
+          Invoke-WebRequest -Uri "https://github.com/koalaman/shellcheck/releases/download/$version/shellcheck-$version.zip" -OutFile $zip
+          if ((Get-FileHash -Algorithm SHA256 $zip).Hash -ne $sha256) { throw "Checksum mismatch for $zip" }
+          Expand-Archive -Path $zip -DestinationPath $dir
+          Add-Content -Path $env:GITHUB_PATH -Value $dir
+          & (Join-Path $dir 'shellcheck.exe') --version
           pip install pyflakes
           pyflakes --version
         if: ${{ runner.os == 'Windows' }}

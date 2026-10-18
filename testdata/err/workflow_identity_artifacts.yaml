@@ -1,0 +1,11 @@
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo test
+        env:
+          TYPO: ${{ job.workflow_reff }}
+          ARTIFACT_TYPO: ${{ github.artifact_list }}
+          NOT_AN_OBJECT: ${{ job.workflow_sha.bad }}
+          NOT_AN_ARRAY: ${{ github.artifacts_list[0] }}

@@ -15,5 +15,6 @@ FROM alpine:${ALPINE_VER}
 COPY --from=builder /go/src/app/actionlint /usr/local/bin/
 COPY --from=shellcheck /bin/shellcheck /usr/local/bin/shellcheck
 RUN apk add --no-cache py3-pyflakes
-USER guest
+# Numeric UID:GID of Alpine's built-in `guest` user (405:100) so it resolves on any host (hadolint DL3066)
+USER 405:100
 ENTRYPOINT ["/usr/local/bin/actionlint"]

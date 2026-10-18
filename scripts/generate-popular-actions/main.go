@@ -49,12 +49,16 @@ type registry struct {
 	SkipOutputs bool `json:"skip_outputs"`
 }
 
+// rawContentBaseURL is the base URL to fetch raw action metadata files. It is a variable so that
+// tests can point it to a local server instead of depending on the behavior of the live endpoint.
+var rawContentBaseURL = "https://raw.githubusercontent.com"
+
 func (r *registry) rawURL(tag string) string {
 	ext := "yml"
 	if r.FileExt != "" {
 		ext = r.FileExt
 	}
-	return fmt.Sprintf("https://raw.githubusercontent.com/%s/%s%s/action.%s", r.Slug, tag, r.Path, ext)
+	return fmt.Sprintf("%s/%s/%s%s/action.%s", rawContentBaseURL, r.Slug, tag, r.Path, ext)
 }
 
 func (r *registry) githubURL(tag string) string {

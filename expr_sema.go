@@ -270,6 +270,8 @@ var BuiltinGlobalVariableTypes = map[string]ExprType{
 		"actor_id":                  StringType{},
 		"api_url":                   StringType{},
 		"artifact_cache_size_limit": NumberType{}, // Note: Undocumented
+		"artifacts":                 StringType{},
+		"artifacts_list":            StringType{},
 		"base_ref":                  StringType{},
 		"env":                       StringType{},
 		"event":                     NewEmptyObjectType(), // Note: Stricter type check for this payload would be possible
@@ -322,7 +324,11 @@ var BuiltinGlobalVariableTypes = map[string]ExprType{
 				"ports":   NewMapObjectType(StringType{}),
 			}),
 		),
-		"status": StringType{},
+		"status":              StringType{},
+		"workflow_ref":        StringType{},
+		"workflow_sha":        StringType{},
+		"workflow_repository": StringType{},
+		"workflow_file_path":  StringType{},
 	}),
 	// https://docs.github.com/en/actions/learn-github-actions/contexts#steps-context
 	"steps": NewEmptyStrictObjectType(), // This value will be updated contextually
@@ -781,7 +787,7 @@ func (sema *ExprSemanticsChecker) checkIndexAccess(n *IndexAccessNode) ExprType 
 		case StringType:
 			// Index access with string literal like foo['bar']
 			if lit, ok := n.Index.(*StringNode); ok {
-				if prop, ok := ty.Props[lit.Value]; ok {
+				if prop, ok := ty.Props[strings.ToLower(lit.Value)]; ok {
 					return prop
 				}
 				if ty.Mapped != nil {

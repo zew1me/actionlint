@@ -1,0 +1,8 @@
+test.yaml:5:14: context "needs" is not allowed here. available contexts are "github", "inputs", "vars". see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability for more details [expression]
+test.yaml:5:14: property "build" is not defined in object type {} [expression]
+test.yaml:12:14: "queue: max" cannot be combined with "cancel-in-progress: true" in "concurrency" section [syntax-check]
+test.yaml:20:14: invalid value "Max" for "queue" in "concurrency" section. expected "single" or "max" [syntax-check]
+test.yaml:27:18: context "secrets" is not allowed here. available contexts are "github", "inputs", "matrix", "needs", "strategy", "vars". see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability for more details [expression]
+test.yaml:34:18: calling function "hashFiles" is not allowed here. "hashFiles" is only available in "jobs.<job_id>.steps.continue-on-error", "jobs.<job_id>.steps.env", "jobs.<job_id>.steps.if", "jobs.<job_id>.steps.name", "jobs.<job_id>.steps.run", "jobs.<job_id>.steps.timeout-minutes", "jobs.<job_id>.steps.with", "jobs.<job_id>.steps.working-directory". see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability for more details [expression]
+test.yaml:41:24: unexpected end of input while parsing object property dereference like 'a.b' or array element dereference like 'a.*'. expecting "IDENT", "*" [expression]
+test.yaml:48:14: object, array, and null values should not be evaluated in template with ${{ }} but evaluating the value of type object [expression]

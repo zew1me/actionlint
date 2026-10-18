@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"errors"
 	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -464,6 +466,20 @@ func TestInvalidCommandArgs(t *testing.T) {
 }
 
 func TestDetectErrorBadRequest(t *testing.T) {
+	reqs := make(chan string, 1)
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		select {
+		case reqs <- r.Method + " " + r.URL.Path:
+		default:
+		}
+		w.WriteHeader(http.StatusBadRequest)
+	}))
+	defer srv.Close()
+
+	saved := rawContentBaseURL
+	rawContentBaseURL = srv.URL
+	defer func() { rawContentBaseURL = saved }()
+
 	stdout := io.Discard
 	stderr := &bytes.Buffer{}
 	f := filepath.Join("testdata", "registry", "empty_slug.json")
@@ -471,9 +487,18 @@ func TestDetectErrorBadRequest(t *testing.T) {
 	if status != 1 {
 		t.Fatal("exit status is not 1:", status)
 	}
+	select {
+	case req := <-reqs:
+		if req != "HEAD //v2/action.yml" {
+			t.Fatalf("unexpected request: %q", req)
+		}
+	default:
+		t.Fatal("no request was sent to the server")
+	}
 	out := stderr.String()
-	if !strings.Contains(out, "head request for https://raw.githubusercontent.com//v2/action.yml was not successful") {
-		t.Fatalf("stderr was unexpected: %q", out)
+	want := "head request for " + srv.URL + "//v2/action.yml was not successful: 400 Bad Request"
+	if !strings.Contains(out, want) {
+		t.Fatalf("stderr does not contain %q: %q", want, out)
 	}
 }
 

@@ -249,8 +249,9 @@ func (p *parser) parseBool(n *yaml.Node) *Bool {
 		}
 	}
 
+	// YAML boolean scalars also allow True/TRUE and False/FALSE.
 	return &Bool{
-		Value: n.Value == "true",
+		Value: strings.EqualFold(n.Value, "true"),
 		Pos:   posAt(n),
 	}
 }
@@ -820,12 +821,22 @@ func (p *parser) parseConcurrency(pos *Pos, n *yaml.Node) *Concurrency {
 			ret.Group = p.parseString(e.val, false)
 		case "cancel-in-progress":
 			ret.CancelInProgress = p.parseBool(e.val)
+		case "queue":
+			ret.Queue = p.parseString(e.val, false)
+			if q := ret.Queue; q.Value != "" && !q.ContainsExpression() && q.Value != "single" && q.Value != "max" {
+				p.errorfAt(q.Pos, "invalid value %q for \"queue\" in \"concurrency\" section. expected \"single\" or \"max\"", q.Value)
+			}
 		default:
-			p.unexpectedKey(e.key, "concurrency", []string{"group", "cancel-in-progress"})
+			p.unexpectedKey(e.key, "concurrency", []string{"group", "cancel-in-progress", "queue"})
 		}
 	}
 	if ret.Group == nil {
 		p.errorAt(pos, "group name is missing in \"concurrency\" section")
+	}
+	// Only reject a statically known conflict. Either property can contain an
+	// expression whose value is not known until the workflow runs.
+	if q, cancel := ret.Queue, ret.CancelInProgress; q != nil && q.Value == "max" && cancel != nil && cancel.Expression == nil && cancel.Value {
+		p.errorAt(q.Pos, "\"queue: max\" cannot be combined with \"cancel-in-progress: true\" in \"concurrency\" section")
 	}
 	return ret
 }
