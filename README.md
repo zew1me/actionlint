@@ -1,5 +1,36 @@
 actionlint
 ==========
+> [!NOTE]
+> **This is a fork of [rhysd/actionlint](https://github.com/rhysd/actionlint).**
+>
+> The upstream project is the canonical actionlint and all credit for it goes to [@rhysd](https://github.com/rhysd) and its
+> contributors. Please use upstream unless you specifically need the changes below.
+>
+> This fork exists to cover GitHub Actions updates (workflow syntax and schema changes, runner labels, popular action metadata)
+> that happened after the last commit merged into upstream (`011a6d1`, upstream PR [#651](https://github.com/rhysd/actionlint/pull/651)).
+> Behavior outside of those updates is intended to match upstream. See [CHANGELOG.md](./CHANGELOG.md) for the fork basis.
+>
+> - The command is still named `actionlint` so that it is a drop-in replacement. Because of that, do not install it side by side with
+>   upstream's package.
+> - Every package or distribution identity is renamed so that it never collides with upstream's: the default name is
+>   **`actionlint-zew1me`** (Homebrew cask, Docker image, release archives). The Go module path is `github.com/zew1me/actionlint`.
+> - Issues and pull requests for this fork go to [zew1me/actionlint](https://github.com/zew1me/actionlint/issues). Please do not
+>   report problems with this fork to upstream.
+>
+> Install the fork:
+>
+> ```sh
+> # Go (works without a release)
+> go install github.com/zew1me/actionlint/cmd/actionlint@main
+>
+> # Homebrew cask, Docker image and release archives are published to this repository once the fork cuts its first release
+> brew tap zew1me/actionlint https://github.com/zew1me/actionlint && brew install --cask actionlint-zew1me
+> docker run --rm -v "$(pwd):/repo" --workdir /repo ghcr.io/zew1me/actionlint-zew1me:latest -color
+> ```
+>
+> Packages in other ecosystems (Chocolatey, Scoop, winget, Arch, Nix, Homebrew core, asdf, mise, ...) distribute **upstream** actionlint,
+> not this fork.
+
 [![CI Status][ci-badge]][ci]
 [![API Document][apidoc-badge]][apidoc]
 
@@ -84,12 +115,12 @@ test.yaml:22:17: receiver of object dereference "permissions" must be type of ob
 
 ## Quick start
 
-Install `actionlint` command by downloading [the released binary][releases] or by Homebrew or by `go install`. See
+Install `actionlint` command by `go install` or by downloading [the released binary][releases] (once this fork publishes releases). See
 [the installation document][install] for more details like how to manage the command with several package managers
 or run via Docker container.
 
 ```sh
-go install github.com/zew1me/actionlint/cmd/actionlint@latest
+go install github.com/zew1me/actionlint/cmd/actionlint@main
 ```
 
 Basically all you need to do is run the `actionlint` command in your repository. actionlint automatically detects workflows and
@@ -109,7 +140,7 @@ See [the usage document][usage] for more details.
 - [Checks][checks]: Full list of all checks done by actionlint with example inputs, outputs, and playground links.
 - [Installation][install]: Installation instructions. Prebuilt binaries, a Docker image, building from source, a download script
   (for CI), supports by several package managers are available.
-- [Usage][usage]: How to use `actionlint` command locally or on GitHub Actions, the online playground, an official Docker image,
+- [Usage][usage]: How to use `actionlint` command locally or on GitHub Actions, the online playground, the Docker image of this fork,
   and integrations with reviewdog, Problem Matchers, super-linter, pre-commit, VS Code.
 - [Configuration][config]: How to configure actionlint behavior. Currently, the labels of self-hosted runners, the configuration
   variables, and ignore patterns of errors for each file paths can be set.
@@ -119,30 +150,32 @@ See [the usage document][usage] for more details.
 ## Bug reporting
 
 When you see some bugs or false positives, it is helpful to [file a new issue][issue-form] with a minimal example
-of input. Giving me some feedbacks like feature requests or ideas of additional checks is also welcome.
+of input. Feedback like feature requests or ideas of additional checks is also welcome. Issues for this fork go to
+[zew1me/actionlint][issue-form]; issues for upstream actionlint go to [rhysd/actionlint](https://github.com/rhysd/actionlint/issues).
 
 See the [contribution guide](./CONTRIBUTING.md) for more details.
 
 ## License
 
-actionlint is distributed under [the MIT license](./LICENSE.txt).
+actionlint is distributed under [the MIT license](./LICENSE.txt). Copyright (c) 2021 rhysd; this fork keeps the original license
+and copyright notice.
 
-[ci-badge]: https://github.com/rhysd/actionlint/actions/workflows/ci.yaml/badge.svg
-[ci]: https://github.com/rhysd/actionlint/actions/workflows/ci.yaml
-[apidoc-badge]: https://pkg.go.dev/badge/github.com/rhysd/actionlint.svg
-[apidoc]: https://pkg.go.dev/github.com/rhysd/actionlint
-[repo]: https://github.com/rhysd/actionlint
-[playground]: https://rhysd.github.io/actionlint/
+[ci-badge]: https://github.com/zew1me/actionlint/actions/workflows/ci.yaml/badge.svg
+[ci]: https://github.com/zew1me/actionlint/actions/workflows/ci.yaml
+[apidoc-badge]: https://pkg.go.dev/badge/github.com/zew1me/actionlint.svg
+[apidoc]: https://pkg.go.dev/github.com/zew1me/actionlint
+[repo]: https://github.com/zew1me/actionlint
+[playground]: https://zew1me.github.io/actionlint/
 [shellcheck]: https://github.com/koalaman/shellcheck
 [pyflakes]: https://github.com/PyCQA/pyflakes
 [syntax-doc]: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 [filter-pattern-doc]: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
 [script-injection-doc]: https://docs.github.com/en/actions/reference/security/secure-use#good-practices-for-mitigating-script-injection-attacks
-[releases]: https://github.com/rhysd/actionlint/releases
-[checks]: https://github.com/rhysd/actionlint/blob/v1.7.12/docs/checks.md
-[install]: https://github.com/rhysd/actionlint/blob/v1.7.12/docs/install.md
-[usage]: https://github.com/rhysd/actionlint/blob/v1.7.12/docs/usage.md
-[config]: https://github.com/rhysd/actionlint/blob/v1.7.12/docs/config.md
-[api]: https://github.com/rhysd/actionlint/blob/v1.7.12/docs/api.md
-[refs]: https://github.com/rhysd/actionlint/blob/v1.7.12/docs/reference.md
-[issue-form]: https://github.com/rhysd/actionlint/issues/new
+[releases]: https://github.com/zew1me/actionlint/releases
+[checks]: https://github.com/zew1me/actionlint/blob/main/docs/checks.md
+[install]: https://github.com/zew1me/actionlint/blob/main/docs/install.md
+[usage]: https://github.com/zew1me/actionlint/blob/main/docs/usage.md
+[config]: https://github.com/zew1me/actionlint/blob/main/docs/config.md
+[api]: https://github.com/zew1me/actionlint/blob/main/docs/api.md
+[refs]: https://github.com/zew1me/actionlint/blob/main/docs/reference.md
+[issue-form]: https://github.com/zew1me/actionlint/issues/new

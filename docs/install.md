@@ -3,6 +3,13 @@ Installation
 
 This document describes how to install [actionlint](../docs).
 
+> [!IMPORTANT]
+> This repository is a fork of [rhysd/actionlint](https://github.com/rhysd/actionlint). The executable is still named `actionlint`,
+> but the fork's packages use the name **`actionlint-zew1me`** (Homebrew cask, Docker image, release archives) and the Go module
+> path is `github.com/zew1me/actionlint`. Third-party package managers listed in the sections below (Chocolatey, Scoop, winget,
+> Arch Linux, Nix, Homebrew core, asdf, mise) distribute **upstream** actionlint, not this fork. Only the sections "Homebrew cask",
+> "Prebuilt binaries", "Download script", "Docker image" and "Build from source" install this fork.
+
 ## Windows
 
 ### [Chocolatey](https://chocolatey.org/)
@@ -64,18 +71,19 @@ nix-env -iA nixpkgs.actionlint
 
 ### [Homebrew][homebrew]
 
-[`actionlint`][formula] formula is provided by Homebrew officially.
+[`actionlint`][formula] formula is provided by Homebrew officially. Note that it installs **upstream** actionlint, not this fork.
 
 ```sh
 brew install actionlint
 ```
 
-Alternatively, rhysd/actionlint repository also provides its own Homebrew cask, which is automatically updated on new releases.
-If you prefer it, tap the repository and install `actionlint` package with `--cask` option.
+This repository provides its own Homebrew cask named `actionlint-zew1me`, which is generated on new releases of this fork.
+Tap the repository and install the cask with `--cask` option. The cask installs the `actionlint` executable, so it conflicts
+with the upstream `actionlint` formula and cask.
 
 ```sh
-brew tap "rhysd/actionlint" "https://github.com/rhysd/actionlint"
-brew install --cask actionlint
+brew tap "zew1me/actionlint" "https://github.com/zew1me/actionlint"
+brew install --cask actionlint-zew1me
 ```
 
 > [!WARNING]
@@ -87,7 +95,7 @@ brew install --cask actionlint
 Download an archive file from [the releases page][releases] for your platform, unarchive it and put the executable file to a
 directory in `$PATH`.
 
-Prebuilt binaries are built at each releases by CI for the following OS and arch:
+Prebuilt binaries are built at each release of this fork by CI for the following OS and arch:
 
 - macOS (x86_64, arm64)
 - Linux (i386, x86_64, arm32, arm64)
@@ -103,34 +111,35 @@ Note that the following targets are not tested since GitHub Actions doesn't supp
 To install these binaries [`gh`][gh] command is useful. The following command is an example for x86_64 Linux.
 
 ```sh
-gh release download --repo rhysd/actionlint --pattern '*_linux_amd64.tar.gz' v1.7.11
-tar xf actionlint_1.7.11_linux_amd64.tar.gz
+gh release download --repo zew1me/actionlint --pattern '*_linux_amd64.tar.gz' vX.Y.Z
+tar xf actionlint-zew1me_X.Y.Z_linux_amd64.tar.gz
 ./actionlint -version
 ```
 
 Optionally you can verify the [attestation][attestations] of the downloaded artifact. This is highly recommended in terms of
-security. Note that the attestation support was introduced since actionlint v1.7.11.
+security. Release archives of this fork are named `actionlint-zew1me_{version}_{os}_{arch}.{tar.gz|zip}` and contain the `actionlint`
+executable.
 
 ```sh
-gh attestation verify -R rhysd/actionlint actionlint_1.7.11_linux_amd64.tar.gz
+gh attestation verify -R zew1me/actionlint actionlint-zew1me_X.Y.Z_linux_amd64.tar.gz
 ```
 
 <a id="download-script"></a>
 ## Download script
 
 To install `actionlint` executable with one command, [the download script](../scripts/download-actionlint.bash) is available.
-It downloads the latest version of actionlint (`actionlint.exe` on Windows and `actionlint` on other OSes) to the current
+It downloads the default version of actionlint from the releases of this fork (`actionlint.exe` on Windows and `actionlint` on other OSes) to the current
 directory automatically. This is a recommended way if you install actionlint in some shell script.
 
 ```sh
-bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+bash <(curl https://raw.githubusercontent.com/zew1me/actionlint/main/scripts/download-actionlint.bash)
 ```
 
 When you need to install specific version of actionlint, please give the version to the 1st command line argument. The following
-example installs v1.6.17.
+example installs vX.Y.Z (replace it with a version released by this fork).
 
 ```sh
-bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) 1.6.17
+bash <(curl https://raw.githubusercontent.com/zew1me/actionlint/main/scripts/download-actionlint.bash) X.Y.Z
 ```
 
 This script downloads `actionlint` (or `actionlint.exe` on Windows) binary to the current working directory. When you need to put
@@ -138,14 +147,15 @@ the downloaded binary to some other directory, please give the directory path to
 example installs the latest version to `/usr/bin`.
 
 ```sh
-bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) latest /usr/bin
+bash <(curl https://raw.githubusercontent.com/zew1me/actionlint/main/scripts/download-actionlint.bash) latest /usr/bin
 ```
 
 For the usage of actionlint on GitHub Actions, see [the usage document](usage.md#on-github-actions).
 
 ## Docker image
 
-See [the usage document](./usage.md#docker) to know how to install and use an official actionlint Docker image.
+See [the usage document](./usage.md#docker) to know how to install and use the Docker image of this fork
+(`ghcr.io/zew1me/actionlint-zew1me`).
 
 ## Cross-platform version managers
 
@@ -191,7 +201,7 @@ mise use -g actionlint@latest
 Recent [Go][] toolchain is necessary to build actionlint from source. Last two major versions of Go are supported.
 
 ```sh
-# Install the latest stable version
+# Install the latest tagged version (when this fork has published a tagged release)
 go install github.com/zew1me/actionlint/cmd/actionlint@latest
 
 # Install the head of the main branch
@@ -204,7 +214,7 @@ go install github.com/zew1me/actionlint/cmd/actionlint@main
 
 [formula]: https://formulae.brew.sh/formula/actionlint
 [homebrew]: https://brew.sh/
-[releases]: https://github.com/rhysd/actionlint/releases
+[releases]: https://github.com/zew1me/actionlint/releases
 [gh]: https://docs.github.com/en/github-cli/github-cli/about-github-cli
 [attestations]: https://docs.github.com/en/actions/concepts/security/artifact-attestations
 [Go]: https://golang.org/

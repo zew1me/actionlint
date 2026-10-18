@@ -2,7 +2,11 @@
 Package actionlint is the implementation of actionlint linter. It's a static checker for GitHub
 Actions workflow files.
 
-https://github.com/rhysd/actionlint
+https://github.com/zew1me/actionlint
+
+This is a fork of https://github.com/rhysd/actionlint, which is the canonical actionlint project.
+The fork covers GitHub Actions updates (workflow syntax, runner labels, popular actions) made after
+the last commit merged into upstream. The Go module path is github.com/zew1me/actionlint.
 
 actionlint is a command line tool but it also provides Go API for Go programs. It includes a
 workflow file parser built on top of yaml/go-yaml, lexer/parser/checker for expressions embedded by
@@ -26,13 +30,13 @@ Minimum supported Go version is written in go.mod file in this library. That sai
 are actually not tested on CI. Last two major Go versions are recommended because they're tested on
 CI. For example, when the latest Go version is v1.22, v1.21 and v1.22 are nice to use.
 
-https://github.com/rhysd/actionlint/blob/main/go.mod
+https://github.com/zew1me/actionlint/blob/main/go.mod
 
 # Other documentations
 
 All documentations for actionlint can be found in the following page.
 
-https://github.com/rhysd/actionlint/tree/main/docs
+https://github.com/zew1me/actionlint/tree/main/docs
 
 # License
 
@@ -42,6 +46,6 @@ This library is provided under the MIT license.
 
 Full text can be found in the following page.
 
-https://github.com/rhysd/actionlint/blob/main/LICENSE.txt
+https://github.com/zew1me/actionlint/blob/main/LICENSE.txt
 */
 package actionlint

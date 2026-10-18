@@ -1,7 +1,8 @@
 Playground for actionlint
 =========================
 
-This is a development directory for [actionlint playground](https://rhysd.github.io/actionlint/).
+This is a development directory for the [actionlint playground](https://zew1me.github.io/actionlint/) of the
+[zew1me/actionlint](https://github.com/zew1me/actionlint) fork (upstream: [rhysd/actionlint](https://github.com/rhysd/actionlint)).
 
 The playground is built with HTML/CSS/TypeScript/Wasm. All dependencies are defined in `package.json` and managed by `npm`.
 Tasks for development are defined in [`Makefile`](./Makefile).

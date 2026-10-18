@@ -17,6 +17,9 @@ import (
 	"github.com/zew1me/actionlint"
 )
 
+// playgroundURL is the published playground of this fork. Change it here if the playground is hosted elsewhere.
+const playgroundURL = "https://zew1me.github.io/actionlint/"
+
 func Actionlint(src []byte) ([]byte, error) {
 	var out bytes.Buffer
 
@@ -151,7 +154,7 @@ func (u *Updater) PlaygroundLink(src []byte) string {
 	u.err(comp.Close())
 	u.err(b64.Close())
 
-	return fmt.Sprintf("[Playground](https://rhysd.github.io/actionlint/#%s)", out.Bytes())
+	return fmt.Sprintf("[Playground](%s#%s)", playgroundURL, out.Bytes())
 }
 
 func (u *Updater) state(s state, reason string) {

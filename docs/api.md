@@ -61,7 +61,7 @@ repository.
 
 [Checks](checks.md) | [Installation](install.md) | [Usage](usage.md) | [Configuration](config.md) | [References](reference.md)
 
-[api-badge]: https://pkg.go.dev/badge/github.com/rhysd/actionlint.svg
-[apidoc]: https://pkg.go.dev/github.com/rhysd/actionlint
+[api-badge]: https://pkg.go.dev/badge/github.com/zew1me/actionlint.svg
+[apidoc]: https://pkg.go.dev/github.com/zew1me/actionlint
 [go-yaml]: https://github.com/yaml/go-yaml
 [filter-pattern-doc]: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
