@@ -25,7 +25,8 @@ jobs:
         with:
           ruby-version: '3.3'
       - run: gem install ronn
-      - run: ronn ./man/actionlint.1.ronn
+      # Only the roff man page is packaged by GoReleaser. HTML output of ronn 0.7.3 crashes with mustache>=1.1.3.
+      - run: ronn --roff ./man/actionlint.1.ronn
       - uses: actions/setup-go@v6
         with:
           go-version: '1.26'
