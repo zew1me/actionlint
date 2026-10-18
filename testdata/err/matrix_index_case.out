@@ -1,0 +1,3 @@
+test.yaml:13:21: property "OPERATING_SYSTEM" is not defined in object type {os: string; target: {enabled: bool}} [expression]
+test.yaml:14:28: property "ENABELD" is not defined in object type {enabled: bool} [expression]
+test.yaml:15:30: index access operand must be type of object or array but got "bool" [expression]

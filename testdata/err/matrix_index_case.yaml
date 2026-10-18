@@ -1,0 +1,15 @@
+on: push
+jobs:
+  test:
+    strategy:
+      matrix:
+        OS: [ubuntu-latest]
+        Target:
+          - Enabled: true
+    runs-on: ${{ matrix['Os'] }}
+    steps:
+      - run: echo test
+        env:
+          TYPO: ${{ matrix['OPERATING_SYSTEM'] }}
+          NESTED_TYPO: ${{ matrix['TARGET']['ENABELD'] }}
+          NOT_AN_OBJECT: ${{ matrix['TARGET']['ENABLED']['OTHER'] }}

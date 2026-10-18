@@ -781,7 +781,7 @@ func (sema *ExprSemanticsChecker) checkIndexAccess(n *IndexAccessNode) ExprType 
 		case StringType:
 			// Index access with string literal like foo['bar']
 			if lit, ok := n.Index.(*StringNode); ok {
-				if prop, ok := ty.Props[lit.Value]; ok {
+				if prop, ok := ty.Props[strings.ToLower(lit.Value)]; ok {
 					return prop
 				}
 				if ty.Mapped != nil {

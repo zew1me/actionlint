@@ -193,6 +193,33 @@ func TestExprSemanticsCheckOK(t *testing.T) {
 			},
 		},
 		{
+			what:     "case insensitive context property index access",
+			input:    "job['StAtUs']",
+			expected: StringType{},
+		},
+		{
+			what:     "case insensitive matrix index access",
+			input:    "matrix['OS']",
+			expected: StringType{},
+			matrix:   NewStrictObjectType(map[string]ExprType{"os": StringType{}}),
+		},
+		{
+			what:     "case insensitive matrix nested index access",
+			input:    "matrix['TaRgEt']['EnAbLeD']",
+			expected: BoolType{},
+			matrix: NewStrictObjectType(map[string]ExprType{
+				"target": NewStrictObjectType(map[string]ExprType{"enabled": BoolType{}}),
+			}),
+		},
+		{
+			what:     "case insensitive nonstrict object index retains known type",
+			input:    "test()['EnAbLeD']",
+			expected: BoolType{},
+			funcs: map[string][]*FuncSignature{
+				"test": {{Name: "test", Ret: NewObjectType(map[string]ExprType{"enabled": BoolType{}})}},
+			},
+		},
+		{
 			what:     "object property index access with any type",
 			input:    "github.event['FOOO']",
 			expected: AnyType{},
