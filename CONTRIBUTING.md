@@ -167,6 +167,8 @@ When releasing v1.2.3 as example:
 5. Write up release notes, uncheck pre-release checkbox and publish the new release
 6. Run `make CHANGELOG.md` to update [CHANGELOG.md](./CHANGELOG.md) and make a commit for the change. This step requires
    [changelog-from-release](https://github.com/rhysd/changelog-from-release).
+   Note that `make CHANGELOG.md` regenerates the whole file from release notes, so it would drop the "Fork notice" section at
+   the top of the file. Keep that section (and upstream's history) when updating the file.
 7. Run `git pull` to merge upstream changes to local `main` branch and run `git push origin main`
 8. Update the playground by `./playground/deploy.bash` if it is not updated yet for the release. The playground is served
    from the `gh-pages` branch of this fork (https://zew1me.github.io/actionlint/), which requires GitHub Pages to be enabled

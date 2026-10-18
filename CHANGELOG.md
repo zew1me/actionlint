@@ -1,3 +1,18 @@
+<a id="fork-unreleased"></a>
+# Fork notice: zew1me/actionlint (unreleased)
+
+This repository is a fork of [rhysd/actionlint](https://github.com/rhysd/actionlint). The entries below this section are the
+upstream release history and are kept unchanged.
+
+- **Basis**: upstream commit [`011a6d1`](https://github.com/rhysd/actionlint/commit/011a6d1) (merge of upstream PR
+  [#651](https://github.com/rhysd/actionlint/pull/651)), which is the last commit merged at upstream before this fork diverged.
+  Upstream's latest release at that point is [v1.7.12](#v1.7.12).
+- **Purpose**: cover GitHub Actions updates (workflow syntax and schema, runner labels, popular action metadata) made after that
+  commit.
+- **Identity**: the executable is still named `actionlint`. The Go module path is now `github.com/zew1me/actionlint`, and package
+  and distribution names (Homebrew cask, Docker image `ghcr.io/zew1me/actionlint-zew1me`, release archives) use the default name
+  `actionlint-zew1me` so they never collide with upstream's. Publishing jobs are restricted to `zew1me/actionlint`.
+
 <a id="v1.7.12"></a>
 # [v1.7.12](https://github.com/rhysd/actionlint/releases/tag/v1.7.12) - 2026-03-30
 
