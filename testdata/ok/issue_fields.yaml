@@ -1,0 +1,8 @@
+on:
+  issues:
+    types: [field_added, field_removed]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'issue field changed'
