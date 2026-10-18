@@ -11,6 +11,8 @@ const (
 	compatInvalid                   = 0
 	compatUbuntu2204 runnerOSCompat = 1 << iota
 	compatUbuntu2404
+	compatUbuntu2204Arm
+	compatUbuntu2404Arm
 	compatUbuntu2604
 	compatUbuntu2604Arm
 	compatMacOS140
@@ -93,14 +95,13 @@ var defaultRunnerOSCompats = map[string]runnerOSCompat{
 	"ubuntu-latest-8-cores":  compatUbuntu2404,
 	"ubuntu-latest-16-cores": compatUbuntu2404,
 	// x64 and arm64 are different images, so a job cannot match both labels. This follows the Intel/Arm
-	// macOS and windows-11-arm conflicts. ubuntu-24.04-arm and ubuntu-22.04-arm predate that rule and
-	// still share a bit with their x64 labels.
+	// macOS and windows-11-arm conflicts.
 	"ubuntu-26.04":           compatUbuntu2604,
 	"ubuntu-26.04-arm":       compatUbuntu2604Arm,
 	"ubuntu-24.04":           compatUbuntu2404,
-	"ubuntu-24.04-arm":       compatUbuntu2404,
+	"ubuntu-24.04-arm":       compatUbuntu2404Arm,
 	"ubuntu-22.04":           compatUbuntu2204,
-	"ubuntu-22.04-arm":       compatUbuntu2204,
+	"ubuntu-22.04-arm":       compatUbuntu2204Arm,
 	"macos-latest-xlarge":    compatMacOS260XL,
 	"macos-latest-large":     compatMacOS260L,
 	"macos-latest":           compatMacOS260,
@@ -124,7 +125,7 @@ var defaultRunnerOSCompats = map[string]runnerOSCompat{
 	"windows-2022":           compatWindows2022,
 	"windows-11-arm":         compatWindows11Arm,
 	"windows-11-vs2026-arm":  compatWindows11VS2026Arm,
-	"linux":                  compatUbuntu2604 | compatUbuntu2604Arm | compatUbuntu2404 | compatUbuntu2204, // Note: "linux" does not always indicate Ubuntu. It might be Fedora or Arch or ...
+	"linux":                  compatUbuntu2604 | compatUbuntu2604Arm | compatUbuntu2404 | compatUbuntu2404Arm | compatUbuntu2204 | compatUbuntu2204Arm, // Note: "linux" does not always indicate Ubuntu. It might be Fedora or Arch or ...
 	"macos":                  compatMacOS270 | compatMacOS270XL | compatMacOS260 | compatMacOS260Intel | compatMacOS260L | compatMacOS260XL | compatMacOS150 | compatMacOS150Intel | compatMacOS150L | compatMacOS150XL | compatMacOS140 | compatMacOS140L | compatMacOS140XL,
 	"windows":                compatWindows2025VS2026 | compatWindows2025 | compatWindows2022 | compatWindows11Arm | compatWindows11VS2026Arm,
 }

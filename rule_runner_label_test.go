@@ -67,6 +67,31 @@ func TestRuleRunnerLabelCheckLabels(t *testing.T) {
 			labels: []string{"ubuntu-latest", "ubuntu-latest-16-cores"},
 		},
 		{
+			what:   "GH-hosted Linux Arm 24.04 runner label",
+			labels: []string{"ubuntu-24.04-arm"},
+		},
+		{
+			what:   "GH-hosted Linux Arm 22.04 runner label",
+			labels: []string{"ubuntu-22.04-arm"},
+		},
+		{
+			what:   "GH-hosted Linux Arm runner label with self-hosted preset labels",
+			labels: []string{"self-hosted", "linux", "arm64", "ubuntu-24.04-arm"},
+		},
+		{
+			what:   "GH-hosted Linux Arm 22.04 runner label with self-hosted preset labels",
+			labels: []string{"linux", "arm64", "ubuntu-22.04-arm"},
+		},
+		{
+			what:   "self-hosted Linux Arm runner",
+			labels: []string{"self-hosted", "linux", "arm64"},
+		},
+		{
+			what:   "linux label with both GH-hosted Linux Arm labels in matrix",
+			labels: []string{"linux", "${{matrix.os}}"},
+			matrix: []string{"ubuntu-24.04-arm", "ubuntu-22.04-arm", "ubuntu-24.04", "ubuntu-22.04"},
+		},
+		{
 			what:   "larger Windows runner",
 			labels: []string{"windows-latest-8-cores"},
 		},
@@ -272,9 +297,50 @@ func TestRuleRunnerLabelCheckLabels(t *testing.T) {
 			errs:   []string{`label "windows-2022" conflicts with label "windows-latest"`},
 		},
 		{
-			what:   "Linux labels architecture conflict",
+			what:   "Linux labels explicit version conflict",
 			labels: []string{"ubuntu-24.04", "ubuntu-22.04"},
 			errs:   []string{`label "ubuntu-22.04" conflicts with label "ubuntu-24.04"`},
+		},
+		{
+			what:   "Linux 24.04 labels architecture conflict",
+			labels: []string{"ubuntu-24.04", "ubuntu-24.04-arm"},
+			errs:   []string{`label "ubuntu-24.04-arm" conflicts with label "ubuntu-24.04"`},
+		},
+		{
+			what:   "Linux 24.04 labels architecture conflict in reverse order",
+			labels: []string{"ubuntu-24.04-arm", "ubuntu-24.04"},
+			errs:   []string{`label "ubuntu-24.04" conflicts with label "ubuntu-24.04-arm"`},
+		},
+		{
+			what:   "Linux 22.04 labels architecture conflict",
+			labels: []string{"ubuntu-22.04", "ubuntu-22.04-arm"},
+			errs:   []string{`label "ubuntu-22.04-arm" conflicts with label "ubuntu-22.04"`},
+		},
+		{
+			what:   "Linux 22.04 labels architecture conflict in reverse order",
+			labels: []string{"ubuntu-22.04-arm", "ubuntu-22.04"},
+			errs:   []string{`label "ubuntu-22.04" conflicts with label "ubuntu-22.04-arm"`},
+		},
+		{
+			what:   "Linux Arm label conflicts with x64 ubuntu-latest",
+			labels: []string{"ubuntu-latest", "ubuntu-24.04-arm"},
+			errs:   []string{`label "ubuntu-24.04-arm" conflicts with label "ubuntu-latest"`},
+		},
+		{
+			what:   "Linux Arm labels version conflict",
+			labels: []string{"ubuntu-24.04-arm", "ubuntu-22.04-arm"},
+			errs:   []string{`label "ubuntu-22.04-arm" conflicts with label "ubuntu-24.04-arm"`},
+		},
+		{
+			what:   "Linux Arm label conflicts with other version x64 label",
+			labels: []string{"ubuntu-24.04-arm", "ubuntu-22.04"},
+			errs:   []string{`label "ubuntu-22.04" conflicts with label "ubuntu-24.04-arm"`},
+		},
+		{
+			what:   "Linux architecture conflict in matrix",
+			labels: []string{"${{matrix.os}}", "ubuntu-24.04"},
+			matrix: []string{"ubuntu-24.04-arm"},
+			errs:   []string{`label "ubuntu-24.04" conflicts with label "ubuntu-24.04-arm"`},
 		},
 		{
 			what:   "macOS labels architecture conflict",
