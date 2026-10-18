@@ -30,6 +30,7 @@ const (
 	compatWindows2025
 	compatWindows2025VS2026
 	compatWindows11Arm
+	compatWindows11VS2026Arm
 )
 
 // https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
@@ -91,6 +92,9 @@ var defaultRunnerOSCompats = map[string]runnerOSCompat{
 	"ubuntu-latest-4-cores":  compatUbuntu2404,
 	"ubuntu-latest-8-cores":  compatUbuntu2404,
 	"ubuntu-latest-16-cores": compatUbuntu2404,
+	// x64 and arm64 are different images, so a job cannot match both labels. This follows the Intel/Arm
+	// macOS and windows-11-arm conflicts. ubuntu-24.04-arm and ubuntu-22.04-arm predate that rule and
+	// still share a bit with their x64 labels.
 	"ubuntu-26.04":           compatUbuntu2604,
 	"ubuntu-26.04-arm":       compatUbuntu2604Arm,
 	"ubuntu-24.04":           compatUbuntu2404,
@@ -119,10 +123,10 @@ var defaultRunnerOSCompats = map[string]runnerOSCompat{
 	"windows-2025-vs2026":    compatWindows2025VS2026,
 	"windows-2022":           compatWindows2022,
 	"windows-11-arm":         compatWindows11Arm,
-	"windows-11-vs2026-arm":  compatWindows11Arm,                                                           // windows-11-arm migrated by September 30, 2026.
+	"windows-11-vs2026-arm":  compatWindows11VS2026Arm,
 	"linux":                  compatUbuntu2604 | compatUbuntu2604Arm | compatUbuntu2404 | compatUbuntu2204, // Note: "linux" does not always indicate Ubuntu. It might be Fedora or Arch or ...
 	"macos":                  compatMacOS270 | compatMacOS270XL | compatMacOS260 | compatMacOS260Intel | compatMacOS260L | compatMacOS260XL | compatMacOS150 | compatMacOS150Intel | compatMacOS150L | compatMacOS150XL | compatMacOS140 | compatMacOS140L | compatMacOS140XL,
-	"windows":                compatWindows2025VS2026 | compatWindows2025 | compatWindows2022 | compatWindows11Arm,
+	"windows":                compatWindows2025VS2026 | compatWindows2025 | compatWindows2022 | compatWindows11Arm | compatWindows11VS2026Arm,
 }
 
 // RuleRunnerLabel is a rule to check runner label like "ubuntu-latest". There are two types of

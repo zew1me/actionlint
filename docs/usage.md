@@ -39,7 +39,11 @@ The `runner-label` check recognizes these additional `runs-on` labels:
 
 Use a matrix to run on multiple images, rather than putting incompatible images in a single `runs-on` array.
 The Xcode labels are not Intel images, and the standard and xlarge labels select distinct runner sizes.
-`windows-11-arm` and `windows-11-vs2026-arm` are compatible: the former completed its migration by September 30.
+`ubuntu-26.04` and `ubuntu-26.04-arm` conflict, because a job cannot run on x64 and arm64 at once. This matches the
+existing Intel/Arm macOS and `windows-11-arm` checks. `ubuntu-24.04-arm` and `ubuntu-22.04-arm` are unchanged and do
+not yet conflict with their x64 labels.
+`windows-11-arm` and `windows-11-vs2026-arm` also conflict. GitHub planned to move `windows-11-arm` to Visual Studio 2026
+by September 30, but has not confirmed that the move is complete, and still documents them as separate images.
 
 `-latest` aliases follow migrations GitHub completed by the cutoff, so they conflict with labels for older images:
 

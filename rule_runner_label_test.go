@@ -292,6 +292,21 @@ func TestRuleRunnerLabelCheckLabels(t *testing.T) {
 			errs:   []string{`label "windows-11-arm" conflicts with label "windows-2025"`},
 		},
 		{
+			what:   "Ubuntu 26.04 labels architecture conflict",
+			labels: []string{"ubuntu-26.04", "ubuntu-26.04-arm"},
+			errs:   []string{`label "ubuntu-26.04-arm" conflicts with label "ubuntu-26.04"`},
+		},
+		{
+			what:   "Ubuntu 26.04 labels architecture conflict in reverse order",
+			labels: []string{"ubuntu-26.04-arm", "ubuntu-26.04"},
+			errs:   []string{`label "ubuntu-26.04" conflicts with label "ubuntu-26.04-arm"`},
+		},
+		{
+			what:   "Windows 11 Arm64 image conflict",
+			labels: []string{"windows-11-arm", "windows-11-vs2026-arm"},
+			errs:   []string{`label "windows-11-vs2026-arm" conflicts with label "windows-11-arm"`},
+		},
+		{
 			what:   "macOS XL and normal labels conflict",
 			labels: []string{"macos-26-xlarge", "macos-26"},
 			errs:   []string{`label "macos-26" conflicts with label "macos-26-xlarge"`},
@@ -406,7 +421,8 @@ func TestRuleRunnerLabel2026Images(t *testing.T) {
 		{"ubuntu-26.04-arm", "ubuntu-22.04-arm"},
 		{"ubuntu-26.04", "ubuntu-latest"}, // migration starts October 19, after cutoff
 		{"windows-11-vs2026-arm", "windows-2025-vs2026"},
-		{"xcode-27", "macos-26"}, // now macOS 27, not the preview's original macOS 26
+		{"windows-11-vs2026-arm", "windows-11-arm"}, // separate images until the migration is confirmed
+		{"xcode-27", "macos-26"},                    // now macOS 27, not the preview's original macOS 26
 		{"xcode-27", "macos-26-intel"},
 		{"xcode-27-xlarge", "macos-26-xlarge"},
 		{"xcode-27-xlarge", "macos-15-intel"},
@@ -444,7 +460,7 @@ func TestRuleRunnerLabel2026Cutoff(t *testing.T) {
 		"macos-14":               compatMacOS140,
 		"macos-14-large":         compatMacOS140L,
 		"macos-14-xlarge":        compatMacOS140XL,
-		"windows-11-vs2026-arm":  compatWindows11Arm,
+		"windows-11-vs2026-arm":  compatWindows11VS2026Arm, // windows-11-arm migration not confirmed complete
 		"windows-11-arm":         compatWindows11Arm,
 	} {
 		if got := defaultRunnerOSCompats[label]; got != want {
