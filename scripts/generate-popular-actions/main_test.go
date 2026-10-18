@@ -466,9 +466,6 @@ func TestInvalidCommandArgs(t *testing.T) {
 }
 
 func TestDetectErrorBadRequest(t *testing.T) {
-	// Use a local server instead of raw.githubusercontent.com so that this test does not depend on
-	// how the live endpoint handles a malformed URL (it now redirects "//v2/action.yml" to a 404).
-	// A bare handler is used rather than http.ServeMux, which would redirect the unclean path.
 	reqs := make(chan string, 1)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		select {
