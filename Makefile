@@ -82,8 +82,11 @@ actionlint_fuzz-fuzz.zip:
 fuzz: actionlint_fuzz-fuzz.zip
 	go-fuzz -bin ./actionlint_fuzz-fuzz.zip -func $(FUZZ_FUNC)
 
-man/actionlint.1 man/actionlint.1.html: man/actionlint.1.ronn
-	ronn man/actionlint.1.ronn
+man/actionlint.1: man/actionlint.1.md
+	go run github.com/cpuguy83/go-md2man/v2@v2.0.7 -in man/actionlint.1.md -out man/actionlint.1
+
+man/actionlint.1.html: man/actionlint.1
+	mandoc -T html man/actionlint.1 > man/actionlint.1.html
 
 man: man/actionlint.1
 

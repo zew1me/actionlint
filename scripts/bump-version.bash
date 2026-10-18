@@ -55,7 +55,7 @@ tag="v${version}"
 job_url='https://github.com/zew1me/actionlint/actions/workflows/release.yaml'
 playground_html='./playground/index.html'
 readme_doc='./README.md'
-man_ronn='./man/actionlint.1.ronn'
+man_md='./man/actionlint.1.md'
 
 echo "Bumping up version to ${version} (tag: ${tag})"
 
@@ -76,13 +76,13 @@ sed_ "\
     s/id=\"version\">v[0-9]+\.[0-9]+\.[0-9]+/id=\"version\">v${version}/; \
     " "$playground_html"
 
-for f in "$readme_doc" "$man_ronn" "$playground_html"; do
+for f in "$readme_doc" "$man_md" "$playground_html"; do
     echo "Updating document links in $f"
     sed_ "s/\/zew1me\/actionlint\/blob\/(v[0-9]+\.[0-9]+\.[0-9]+|main)\/docs\//\/zew1me\/actionlint\/blob\/v${version}\/docs\//g" "$f"
 done
 
 echo 'Creating a version bump commit and a version tag'
-git add "$pre_commit_hook" "$usage_doc" "$playground_html" "$readme_doc" "$man_ronn"
+git add "$pre_commit_hook" "$usage_doc" "$playground_html" "$readme_doc" "$man_md"
 git commit -m "bump up version to ${tag}"
 git tag "$tag"
 

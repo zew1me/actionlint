@@ -1,14 +1,17 @@
-actionlint(1) -- static checker for GitHub Actions workflow files
-=================================================================
+ACTIONLINT 1 "" "actionlint" "User Commands"
+============================================
 
-## SYNOPSIS
+# NAME
 
-`actionlint` [<flags>] <br>
-`actionlint` [<flags>] <file>...<br>
-`actionlint` [<flags>] -<br>
+actionlint - static checker for GitHub Actions workflow files
 
+# SYNOPSIS
 
-## DESCRIPTION
+**actionlint** [*flags*]  
+**actionlint** [*flags*] *file*...  
+**actionlint** [*flags*] -
+
+# DESCRIPTION
 
 **actionlint** is a linter for GitHub Actions workflow files.
 
@@ -24,8 +27,7 @@ Features:
 - **Other several useful checks**; glob syntax validation, dependencies check for `needs:`, runner
   label validation, cron syntax validation, ...
 
-
-## USAGE
+# USAGE
 
 To check all workflow files in the current repository, just run **actionlint** without arguments.
 It automatically finds the nearest `.github/workflows` directory:
@@ -46,75 +48,72 @@ with Go template syntax.
 
     $ actionlint -format '{{json .}}'
 
+# FLAGS
 
-## FLAGS
+**-color**
+:   Always enable colorful output. This is useful to force colorful outputs
 
-  * `-color`:
-    Always enable colorful output. This is useful to force colorful outputs
+**-config-file** *PATH*
+:   File path to config file
 
-  * `-config-file` <PATH>:
-    File path to config file
+**-debug**
+:   Enable debug output (for development)
 
-  * `-debug`:
-    Enable debug output (for development)
-
-  * `-format` <FORMAT>:
-    Custom template to format error messages in Go template syntax. See the usage documentation
+**-format** *FORMAT*
+:   Custom template to format error messages in Go template syntax. See the usage documentation
     for more details.
 
-  * `-ignore` <PATTERN>:
-    Regular expression matching to error messages you want to ignore. This flag is repeatable. For
+**-ignore** *PATTERN*
+:   Regular expression matching to error messages you want to ignore. This flag is repeatable. For
     example, `-ignore A -ignore B` ignores errors whose message includes "A" OR "B".
 
-  * `-init-config`:
-    Generate default config file at `.github/actionlint.yaml` in current project
+**-init-config**
+:   Generate default config file at `.github/actionlint.yaml` in current project
 
-  * `-no-color`:
-    Disable colorful output
+**-no-color**
+:   Disable colorful output
 
-  * `-oneline`:
-    Use one line per one error. Useful for reading error messages from programs
+**-oneline**
+:   Use one line per one error. Useful for reading error messages from programs
 
-  * `-pyflakes` <EXECUTABLE>:
-    Command name or file path of "pyflakes" external command. If empty, pyflakes integration will be
+**-pyflakes** *EXECUTABLE*
+:   Command name or file path of "pyflakes" external command. If empty, pyflakes integration will be
     disabled (default "pyflakes")
 
-  * `-shellcheck` <EXECUTABLE>:
-    Command name or file path of "shellcheck" external command. If empty, shellcheck integration will
+**-shellcheck** *EXECUTABLE*
+:   Command name or file path of "shellcheck" external command. If empty, shellcheck integration will
     be disabled (default "shellcheck")
 
-  * `-verbose`:
-    Enable verbose output
+**-verbose**
+:   Enable verbose output
 
-  * `-stdin-filename` <NAME>:
-    File name when reading input from stdin (default "&lt;stdin&gt;")
+**-stdin-filename** *NAME*
+:   File name when reading input from stdin (default "\<stdin\>")
 
-  * `-version`:
-    Show version and how this binary was installed
+**-version**
+:   Show version and how this binary was installed
 
-  * `-help`, `-h`:
-    Show help
+**-help**, **-h**
+:   Show help
 
-
-## FORK
+# FORK
 
 This is a fork of actionlint by rhysd (https://github.com/rhysd/actionlint). It covers GitHub
 Actions updates (workflow syntax and schema, runner labels, popular actions) made after the last
 commit merged into upstream. The command is still named `actionlint`, but the fork's packages are
 named `actionlint-zew1me` so they never collide with upstream's packages.
 
-
-## DOCUMENTS
+# DOCUMENTS
 
 Documents for more details are available online.
 
-### Checks
+## Checks
 
 https://github.com/zew1me/actionlint/blob/main/docs/checks.md
 
 Full list of all checks done by actionlint with example inputs, outputs, and playground links.
 
-### Installation
+## Installation
 
 https://github.com/zew1me/actionlint/blob/main/docs/install.md
 
@@ -122,36 +121,36 @@ Installation instructions. Prebuilt binaries, Homebrew cask (`actionlint-zew1me`
 source, a Docker image (`ghcr.io/zew1me/actionlint-zew1me`), a download script (for CI) are
 available.
 
-### Usage
+## Usage
 
 https://github.com/zew1me/actionlint/blob/main/docs/usage.md
 
 How to use `actionlint` command locally or on GitHub Actions, the online playground, the Docker
 image of this fork, and integrations with reviewdog, Problem Matchers, super-linter, pre-commit.
 
-### Configuration
+## Configuration
 
 https://github.com/zew1me/actionlint/blob/main/docs/config.md
 
 How to configure actionlint behavior by the configuration file `actionlint.yaml`.
 
-### Go API
+## Go API
 
 https://github.com/zew1me/actionlint/blob/main/docs/api.md
 
 How to use actionlint as Go library.
 
-### References
+## References
 
 https://github.com/zew1me/actionlint/blob/main/docs/reference.md
 
 Links to resources.
 
-## USAGE ON GITHUB ACTIONS
+# USAGE ON GITHUB ACTIONS
 
 Please try the download script.
 
-https://github.com/zew1me/actionlint/blob/main/scripts/download-actionlint.bash
+    https://github.com/zew1me/actionlint/blob/main/scripts/download-actionlint.bash
 
 It downloads the latest version of actionlint executable to the current directory automatically.
 On GitHub Actions environment, it sets a file path to executable to`executable` output for using
@@ -188,18 +187,23 @@ or simply run
   shell: bash
 ```
 
-
-## EXIT STATUS
+# EXIT STATUS
 
 `actionlint` command exits with one of the following exit statuses.
 
-  - **0**: It ran successfully and no problem was found.
-  - **1**: It ran successfully and some problem was found.
-  - **2**: It failed due to invalid command line option.
-  - **3**: It failed due to some fatal error.
+**0**
+:   It ran successfully and no problem was found.
 
+**1**
+:   It ran successfully and some problem was found.
 
-## PLAYGROUND
+**2**
+:   It failed due to invalid command line option.
+
+**3**
+:   It failed due to some fatal error.
+
+# PLAYGROUND
 
 Thanks to WebAssembly, actionlint playground is available on your browser. It never sends any data
 to outside of the browser.
@@ -211,8 +215,7 @@ right pane. When editing the workflow content at the left pane, the results will
 fly in the right pane. Clicking an error message in the results table moves a cursor to the
 position of the error in the code editor.
 
-
-## BUGS
+# BUGS
 
 Please visit issues page of this fork to see known bugs. If you found a new bug or have some feature request,
 please report by making a new issue. Problems of upstream actionlint should be reported to
@@ -220,11 +223,8 @@ https://github.com/rhysd/actionlint/issues instead.
 
 https://github.com/zew1me/actionlint/issues
 
-
-## COPYRIGHT
+# COPYRIGHT
 
 **actionlint** is licensed under the MIT License: `Copyright (c) 2021 rhysd`
 
 https://github.com/zew1me/actionlint/blob/main/LICENSE.txt
-
-<!-- vim: set ft=markdown: -->

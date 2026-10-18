@@ -189,16 +189,18 @@ When releasing v1.2.3 as example:
 
 ## How to generate the manual
 
-`actionlint.1` manual is generated from [`actionlint.1.ronn`](./man/actionlint.1.ronn) by [ronn](https://github.com/rtomayko/ronn).
-
-```sh
-ronn ./man/actionlint.1.ronn
-```
-
-or
+`actionlint.1` manual is generated from [`actionlint.1.md`](./man/actionlint.1.md) by [go-md2man](https://github.com/cpuguy83/go-md2man).
+Only Go is needed since `make` runs it with `go run`.
 
 ```sh
 make man
+```
+
+The HTML version for the playground (`man/actionlint.1.html`) is rendered from the generated roff by [mandoc](https://mandoc.bsd.lv/).
+mandoc is preinstalled on macOS and is available as the `mandoc` package on most Linux distributions.
+
+```sh
+make man/actionlint.1.html
 ```
 
 ## How to develop playground
