@@ -192,7 +192,18 @@ Note that special characters escaped with backslash like `\n` in the format stri
 <a id="on-github-actions"></a>
 ## Use actionlint on GitHub Actions
 
-Preparing `actionlint` executable with the download script is recommended. See [the instruction](install.md#download-script) for
+This fork provides a composite action that installs this fork's release and checks all workflow files in the repository:
+
+```yaml
+steps:
+  - uses: actions/checkout@v6
+  - uses: zew1me/actionlint@main
+```
+
+The optional `version` input selects a release version (without the `v` prefix); it defaults to `latest`, which uses the
+version configured by this fork's download script. Pin the action reference to a trusted release tag or commit SHA in production.
+
+Alternatively, preparing the `actionlint` executable with the download script is recommended. See [the instruction](install.md#download-script) for
 more details. It sets an absolute file path of downloaded executable to `executable` output in order to use the executable in the
 following steps easily.
 

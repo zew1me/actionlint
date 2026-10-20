@@ -1,0 +1,27 @@
+name: actionlint
+description: Run actionlint from the zew1me fork on GitHub Actions workflows.
+author: zew1me
+branding:
+  icon: check
+  color: blue
+inputs:
+  version:
+    description: Version of this fork's actionlint release to install (a version number or latest).
+    required: false
+    default: latest
+runs:
+  using: composite
+  steps:
+    - name: Install actionlint
+      id: install
+      shell: bash
+      env:
+        ACTIONLINT_VERSION: ${{ inputs.version }}
+      run: |
+        temp_dir="$(mktemp -d)"
+        bash "$GITHUB_ACTION_PATH/scripts/download-actionlint.bash" "$ACTIONLINT_VERSION" "$temp_dir"
+    - name: Lint workflow files
+      shell: bash
+      env:
+        ACTIONLINT_EXECUTABLE: ${{ steps.install.outputs.executable }}
+      run: '"$ACTIONLINT_EXECUTABLE" -color'

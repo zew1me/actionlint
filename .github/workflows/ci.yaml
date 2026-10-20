@@ -127,6 +127,8 @@ jobs:
       - run: make lint SKIP_GO_GENERATE=true
       - name: Lint bash scripts
         run: shellcheck ./scripts/*.bash ./playground/*.bash
+      - name: Test the reusable action
+        uses: ./
   docker:
     name: Dockerfile
     runs-on: ubuntu-latest
