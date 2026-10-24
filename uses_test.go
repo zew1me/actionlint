@@ -2,6 +2,7 @@ package actionlint
 
 import (
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -30,6 +31,19 @@ func TestLocalUsesSpec(t *testing.T) {
 				t.Fatalf("got (%q, %v), want (%q, %v)", got, local, tc.want, tc.local)
 			}
 		})
+	}
+}
+
+func TestLocalUsesSpecWindowsSeparator(t *testing.T) {
+	in := `$/..\action`
+	got, local := localUsesSpec(in)
+	if runtime.GOOS == "windows" {
+		if got != in || local {
+			t.Fatalf("got (%q, %v), want (%q, false)", got, local, in)
+		}
+	} else if got != `./..\action` || !local {
+		// Backslash is an ordinary file name character outside Windows
+		t.Fatalf("got (%q, %v), want (%q, true)", got, local, `./..\action`)
 	}
 }
 
