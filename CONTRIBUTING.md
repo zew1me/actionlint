@@ -90,6 +90,13 @@ or
 make test
 ```
 
+Tests which need outbound network access are guarded by the `network` build tag and are skipped by default. CI runs them.
+To run them locally:
+
+```sh
+go test -tags network ./...
+```
+
 To measure the code coverage
 
 ```sh
