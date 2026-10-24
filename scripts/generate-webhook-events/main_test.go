@@ -5,6 +5,8 @@ import (
 	"go/parser"
 	"go/token"
 	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -98,5 +100,58 @@ func TestParseError(t *testing.T) {
 				t.Fatalf("wanted %q in error %q", tc.want, err)
 			}
 		})
+	}
+}
+
+func TestFetchURL(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello"))
+	}))
+	defer ts.Close()
+
+	b, err := fetch(ts.URL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(b) != "hello" {
+		t.Fatalf("unexpected body %q", b)
+	}
+}
+
+func TestFetchURLError(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "not found", http.StatusNotFound)
+	}))
+	defer ts.Close()
+
+	_, err := fetch(ts.URL)
+	if err == nil {
+		t.Fatal("error did not occur")
+	}
+	if !strings.Contains(err.Error(), "request was not successful") {
+		t.Fatalf("unexpected error: %s", err)
+	}
+}
+
+func TestWriteStdoutFromURL(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Join("testdata", "ok.html"))
+	}))
+	defer ts.Close()
+
+	stdout := &strings.Builder{}
+	if err := run([]string{}, stdout, io.Discard, ts.URL); err != nil {
+		t.Fatal(err)
+	}
+
+	b, err := os.ReadFile(filepath.Join("testdata", "ok.go"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := strings.ReplaceAll(string(b), "\r\n", "\n")
+	have := strings.ReplaceAll(stdout.String(), "\r\n", "\n")
+	if diff := cmp.Diff(want, have); diff != "" {
+		t.Fatal(diff)
 	}
 }
