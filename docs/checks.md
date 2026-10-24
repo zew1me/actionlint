@@ -2332,11 +2332,12 @@ For example, `secrets:` is not available when running steps in a normal job. And
 a reusable workflow since the called workflow determines which OS is used. actionlint checks such keys are used correctly
 to call a reusable workflow or to run steps in a normal job.
 
-And the workflow syntax at `uses:` must follow the format `owner/repo/path/to/workflow.yml@ref` as described in
-[the official document][create-reusable-workflow-doc]. actionlint checks if the value follows the format.
+And the workflow syntax at `uses:` must follow one of the formats described in [the official document][create-reusable-workflow-doc]:
+`owner/repo/path/to/workflow.yml@ref` for an external workflow, or `./path/to/workflow.yml` or `$/path/to/workflow.yml` for a
+local workflow in the same repository. actionlint checks if the value follows one of these formats.
 
-actionlint also validates the called workflow file is actually existing when it is a local workflow (starting with `./`).
-actionlint reports an error when it does not exist.
+actionlint also validates the called workflow file is actually existing when it is a local workflow (starting with `./` or
+`$/`). actionlint reports an error when it does not exist.
 
 ### Check types of `inputs.*` and `secrets.*` in reusable workflow
 
