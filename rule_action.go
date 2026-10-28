@@ -328,7 +328,7 @@ func (rule *RuleAction) VisitStep(n *Step) error {
 
 	spec := e.Uses.Value
 
-	if strings.HasPrefix(spec, "$/") && strings.ContainsRune(spec, '@') {
+	if isSelfRepositoryUsesWithRef(spec) {
 		rule.Errorf(e.Uses.Pos, "self-repository action reference %q must not include an @ref suffix", spec)
 		return nil
 	}

@@ -33,3 +33,8 @@ jobs:
       - run: echo "$GREETING"
         env:
           GREETING: ${{ steps.bad.outputs.typo }}
+      - id: with_ref
+        uses: $/actions/greet@v1
+      - run: echo "$GREETING"
+        env:
+          GREETING: ${{ steps.with_ref.outputs.typo }}

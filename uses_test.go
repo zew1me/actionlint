@@ -98,3 +98,23 @@ func TestSelfRepositoryWorkflowCacheAliases(t *testing.T) {
 		t.Fatalf("self-repository reference did not find AST-written metadata: %v, %v", m, err)
 	}
 }
+
+func TestIsSelfRepositoryUsesWithRef(t *testing.T) {
+	for _, tc := range []struct {
+		in   string
+		want bool
+	}{
+		{"$/actions/test@v1", true},
+		{"$/@main", true},
+		{"$/actions/test", false},
+		{"./actions/test@v1", false},
+		{"owner/repo@main", false},
+		{"actions/github-script@v7", false},
+	} {
+		t.Run(tc.in, func(t *testing.T) {
+			if got := isSelfRepositoryUsesWithRef(tc.in); got != tc.want {
+				t.Fatalf("got %v, want %v", got, tc.want)
+			}
+		})
+	}
+}

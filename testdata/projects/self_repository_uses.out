@@ -5,3 +5,4 @@ workflows/caller.yaml:14:7: secret "typo" is not defined in "$/workflows/reusabl
 workflows/caller.yaml:30:15: missing input "message" which is required by action "Greet" defined at "$/actions/greet". all required inputs are "message" [action]
 workflows/caller.yaml:32:11: input "typo" is not defined in action "Greet" defined at "$/actions/greet". available inputs are "message" [action]
 workflows/caller.yaml:35:25: property "typo" is not defined in object type {greeting: string} [expression]
+workflows/caller.yaml:37:15: self-repository action reference "$/actions/greet@v1" must not include an @ref suffix [action]

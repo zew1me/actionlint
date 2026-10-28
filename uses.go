@@ -20,3 +20,10 @@ func localUsesSpec(spec string) (string, bool) {
 	}
 	return spec, strings.HasPrefix(spec, "./")
 }
+
+// isSelfRepositoryUsesWithRef returns true when the spec is a "$/" self-repository reference with an
+// "@ref" suffix. Such a reference is invalid because it always resolves to the defining repository
+// and commit, so it must not be resolved as a local path.
+func isSelfRepositoryUsesWithRef(spec string) bool {
+	return strings.HasPrefix(spec, "$/") && strings.ContainsRune(spec, '@')
+}
