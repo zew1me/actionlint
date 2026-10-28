@@ -330,7 +330,12 @@ func (rule *RuleExpression) getActionOutputsType(spec *String) *ObjectType {
 		return NewMapObjectType(StringType{})
 	}
 
-	if strings.HasPrefix(spec.Value, "./") {
+	// The action rule reports the reference as invalid. Do not load metadata from a path with the suffix.
+	if isSelfRepositoryUsesWithRef(spec.Value) {
+		return NewMapObjectType(StringType{})
+	}
+
+	if _, ok := localUsesSpec(spec.Value); ok {
 		meta, _, err := rule.localActions.FindMetadata(spec.Value)
 		if err != nil {
 			rule.Error(spec.Pos, err.Error())

@@ -1,0 +1,40 @@
+on: push
+jobs:
+  call:
+    uses: $/workflows/reusable.yaml
+    with:
+      message: Hello
+    secrets:
+      token: ${{ secrets.TOKEN }}
+  bad_call:
+    uses: $/workflows/reusable.yaml
+    with:
+      typo: Hello
+    secrets:
+      typo: ${{ secrets.TOKEN }}
+  test:
+    needs: call
+    runs-on: ubuntu-latest
+    steps:
+      - id: greet
+        uses: $/actions/greet
+        with:
+          message: ${{ needs.call.outputs.greeting }}
+      - run: echo "$GREETING"
+        env:
+          GREETING: ${{ steps.greet.outputs.greeting }}
+      - uses: ./actions/greet
+        with:
+          message: Hello
+      - id: bad
+        uses: $/actions/greet
+        with:
+          typo: Hello
+      - run: echo "$GREETING"
+        env:
+          GREETING: ${{ steps.bad.outputs.typo }}
+      - id: with_ref
+        uses: $/actions/greet@v1
+      - run: echo "$GREETING"
+        env:
+          GREETING: ${{ steps.with_ref.outputs.typo }}
