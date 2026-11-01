@@ -1,0 +1,3 @@
+workflows/caller.yaml:8:24: property "typo" is not defined in object type {greeting: string} [expression]
+workflows/caller.yaml:10:11: reusable workflow call "./workflows/reusable.yaml@v1" at "uses" is not following the format "owner/repo/path/to/workflow.yml@ref" nor "./path/to/workflow.yml". see https://docs.github.com/en/actions/learn-github-actions/reusing-workflows for more details [workflow-call]
+workflows/caller.yaml:12:11: reusable workflow call "./" at "uses" is not following the format "owner/repo/path/to/workflow.yml@ref" nor "./path/to/workflow.yml". see https://docs.github.com/en/actions/learn-github-actions/reusing-workflows for more details [workflow-call]

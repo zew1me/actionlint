@@ -363,6 +363,12 @@ func (rule *RuleExpression) getWorkflowCallOutputsType(call *WorkflowCall) *Obje
 		return NewMapObjectType(StringType{})
 	}
 
+	// The workflow call rule reports a malformed local reference (e.g. with an @ref suffix, or no path),
+	// but it may not have run for the called job yet. Do not read a file that cannot be the workflow.
+	if strings.HasPrefix(call.Uses.Value, "./") && !isWorkflowCallUsesLocalFormat(call.Uses.Value) {
+		return NewMapObjectType(StringType{})
+	}
+
 	m, err := rule.localWorkflows.FindMetadata(call.Uses.Value)
 	if err != nil {
 		rule.Error(call.Uses.Pos, err.Error())

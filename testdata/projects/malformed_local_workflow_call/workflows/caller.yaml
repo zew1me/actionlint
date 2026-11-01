@@ -1,0 +1,14 @@
+on: push
+jobs:
+  consumer:
+    needs: [ref_call, root_call, valid_call]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ needs.ref_call.outputs.x }} ${{ needs.root_call.outputs.x }} ${{ needs.valid_call.outputs.greeting }}"
+      - run: echo "${{ needs.valid_call.outputs.typo }}"
+  ref_call:
+    uses: ./workflows/reusable.yaml@v1
+  root_call:
+    uses: ./
+  valid_call:
+    uses: ./workflows/reusable.yaml

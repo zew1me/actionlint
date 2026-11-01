@@ -1,8 +1,10 @@
 package actionlint
 
 import (
+	"cmp"
 	"fmt"
 	"io"
+	"slices"
 	"time"
 )
 
@@ -46,6 +48,27 @@ func (v *Visitor) reportElapsedTime(what string, start time.Time) {
 	fmt.Fprintf(v.dbg, "[Visitor] %s took %vms\n", what, time.Since(start).Milliseconds())
 }
 
+// jobsInSourceOrder returns the jobs in the order they appear in the workflow file. Go randomizes map
+// iteration order. Rules share state across jobs (e.g. the reusable workflow metadata cache), so
+// visiting jobs in random order makes the reported errors and the rules reporting them vary between
+// runs for the same input.
+func jobsInSourceOrder(jobs map[string]*Job) []*Job {
+	sorted := make([]*Job, 0, len(jobs))
+	for _, j := range jobs {
+		sorted = append(sorted, j)
+	}
+	slices.SortFunc(sorted, func(a, b *Job) int {
+		if a.ID == nil || b.ID == nil || a.ID.Pos == nil || b.ID.Pos == nil {
+			return 0 // Nodes not built by the parser have no positions
+		}
+		return cmp.Or(
+			cmp.Compare(a.ID.Pos.Line, b.ID.Pos.Line),
+			cmp.Compare(a.ID.Pos.Col, b.ID.Pos.Col),
+		)
+	})
+	return sorted
+}
+
 // Visit visits given syntax tree in depth-first order
 func (v *Visitor) Visit(n *Workflow) error {
 	var t time.Time
@@ -64,7 +87,7 @@ func (v *Visitor) Visit(n *Workflow) error {
 		t = time.Now()
 	}
 
-	for _, j := range n.Jobs {
+	for _, j := range jobsInSourceOrder(n.Jobs) {
 		if err := v.visitJob(j); err != nil {
 			return err
 		}

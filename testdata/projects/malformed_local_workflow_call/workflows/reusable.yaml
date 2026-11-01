@@ -1,0 +1,10 @@
+on:
+  workflow_call:
+    outputs:
+      greeting:
+        value: hello
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo
