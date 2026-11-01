@@ -1,0 +1,12 @@
+name: Greet with ref
+description: Exists only to show that a rejected @ref reference does not load metadata
+outputs:
+  greeting:
+    description: The greeting
+    value: ${{ steps.greet.outputs.greeting }}
+runs:
+  using: composite
+  steps:
+    - id: greet
+      shell: bash
+      run: echo "greeting=hello" >> "$GITHUB_OUTPUT"

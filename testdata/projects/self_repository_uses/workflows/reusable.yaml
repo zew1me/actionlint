@@ -1,0 +1,22 @@
+on:
+  workflow_call:
+    inputs:
+      message:
+        required: true
+        type: string
+    secrets:
+      token:
+        required: true
+    outputs:
+      greeting:
+        value: ${{ jobs.test.outputs.greeting }}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      greeting: ${{ steps.greet.outputs.greeting }}
+    steps:
+      - id: greet
+        uses: $/actions/greet
+        with:
+          message: ${{ inputs.message }}

@@ -1752,13 +1752,18 @@ test.yaml:13:15: specifying action ".github/my-actions/do-something" in invalid 
 
 [Playground](https://zew1me.github.io/actionlint/#eNpczbEOwyAMBNA9X+EtE0XqyNRfAWIBTbGj2K7Uv69olYXppHsnHVOAw6QuT04SFgBF0ZEAp5G44ZaM1NwrDvuRKB7yXwE4MEEJELM2JvG5Yt7ZdOKrfrzvk6wb5x3P4H3rsWBYJ7+VptWS7x93fWzshDtqbVS+AQAA//+oTjwo)
 
-Action needs to be specified in a format defined in [the document][action-uses-doc]. There are 3 types of actions:
+Action needs to be specified in a format defined in [the document][action-uses-doc]. There are 4 types of action references:
 
 - action hosted on GitHub: `owner/repo/path@ref`
-- local action: `./path/to/my-action`
+- self-repository action: `$/path/to/my-action`
+- workspace-relative local action: `./path/to/my-action`
 - Docker action: `docker://image:tag`
 
 actionlint checks values at `uses:` sections follow one of these formats.
+
+The `$/` form resolves against the repository of the defining workflow or action at its running commit, without a checkout.
+It must not include an `@ref` suffix. actionlint checks inputs and outputs using metadata in the project being linted.
+The same prefix is also supported for reusable workflow calls.
 
 Note that actionlint does not report any error when a directory for a local action does not exist in the repository because it is
 a common case where the action is managed in a separate repository and the action directory is cloned at running the workflow.
@@ -2306,7 +2311,7 @@ test.yaml:6:5: when a reusable workflow is called with "uses", "runs-on" is not 
   |
 6 |     runs-on: ubuntu-latest
   |     ^~~~~~~~
-test.yaml:9:11: reusable workflow call "./.github/workflows/ci.yml@main" at "uses" is not following the format "owner/repo/path/to/workflow.yml@ref" nor "./path/to/workflow.yml". see https://docs.github.com/en/actions/learn-github-actions/reusing-workflows for more details [workflow-call]
+test.yaml:9:11: reusable workflow call "./.github/workflows/ci.yml@main" at "uses" is not following the format "owner/repo/path/to/workflow.yml@ref", "./path/to/workflow.yml", or "$/path/to/workflow.yml". see https://docs.github.com/en/actions/learn-github-actions/reusing-workflows for more details [workflow-call]
   |
 9 |     uses: ./.github/workflows/ci.yml@main
   |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2327,11 +2332,12 @@ For example, `secrets:` is not available when running steps in a normal job. And
 a reusable workflow since the called workflow determines which OS is used. actionlint checks such keys are used correctly
 to call a reusable workflow or to run steps in a normal job.
 
-And the workflow syntax at `uses:` must follow the format `owner/repo/path/to/workflow.yml@ref` as described in
-[the official document][create-reusable-workflow-doc]. actionlint checks if the value follows the format.
+And the workflow syntax at `uses:` must follow one of the formats described in [the official document][create-reusable-workflow-doc]:
+`owner/repo/path/to/workflow.yml@ref` for an external workflow, or `./path/to/workflow.yml` or `$/path/to/workflow.yml` for a
+local workflow in the same repository. actionlint checks if the value follows one of these formats.
 
-actionlint also validates the called workflow file is actually existing when it is a local workflow (starting with `./`).
-actionlint reports an error when it does not exist.
+actionlint also validates the called workflow file is actually existing when it is a local workflow (starting with `./` or
+`$/`). actionlint reports an error when it does not exist.
 
 ### Check types of `inputs.*` and `secrets.*` in reusable workflow
 

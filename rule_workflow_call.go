@@ -61,7 +61,7 @@ func (rule *RuleWorkflowCall) VisitJobPre(n *Job) error {
 		return nil
 	}
 
-	if strings.HasPrefix(u.Value, "./") {
+	if _, ok := localUsesSpec(u.Value); ok {
 		// When the specification is invalid and it is local reusable workflow call, remember it caused
 		// an error by setting `nil` to cache. This can prevent redundant 'could not read workflow call'
 		// error.
@@ -70,7 +70,7 @@ func (rule *RuleWorkflowCall) VisitJobPre(n *Job) error {
 
 	rule.Errorf(
 		u.Pos,
-		"reusable workflow call %q at \"uses\" is not following the format \"owner/repo/path/to/workflow.yml@ref\" nor \"./path/to/workflow.yml\". see https://docs.github.com/en/actions/learn-github-actions/reusing-workflows for more details",
+		"reusable workflow call %q at \"uses\" is not following the format \"owner/repo/path/to/workflow.yml@ref\", \"./path/to/workflow.yml\", or \"$/path/to/workflow.yml\". see https://docs.github.com/en/actions/learn-github-actions/reusing-workflows for more details",
 		u.Value,
 	)
 	return nil
@@ -145,17 +145,17 @@ func (rule *RuleWorkflowCall) checkWorkflowCallUsesLocal(call *WorkflowCall) {
 	rule.Debug("Validated reusable workflow %q", u.Value)
 }
 
-// Parse ./{path/{filename}
+// Parse ./{path}/{filename} or $/{path}/{filename}.
 // https://docs.github.com/en/actions/learn-github-actions/reusing-workflows#calling-a-reusable-workflow
 func isWorkflowCallUsesLocalFormat(u string) bool {
-	if !strings.HasPrefix(u, "./") {
+	local, ok := localUsesSpec(u)
+	if !ok {
 		return false
 	}
-	u = strings.TrimPrefix(u, "./")
+	u = strings.TrimPrefix(local, "./")
 
-	// Cannot container a ref
-	idx := strings.IndexRune(u, '@')
-	if idx > 0 {
+	// Cannot contain a ref
+	if strings.ContainsRune(u, '@') {
 		return false
 	}
 
@@ -166,7 +166,7 @@ func isWorkflowCallUsesLocalFormat(u string) bool {
 // https://docs.github.com/en/actions/learn-github-actions/reusing-workflows#calling-a-reusable-workflow
 func isWorkflowCallUsesRepoFormat(u string) bool {
 	// Repo reference must start with owner
-	if strings.HasPrefix(u, ".") {
+	if strings.HasPrefix(u, ".") || strings.HasPrefix(u, "$/") {
 		return false
 	}
 

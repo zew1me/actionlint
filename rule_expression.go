@@ -330,7 +330,12 @@ func (rule *RuleExpression) getActionOutputsType(spec *String) *ObjectType {
 		return NewMapObjectType(StringType{})
 	}
 
-	if strings.HasPrefix(spec.Value, "./") {
+	// The action rule reports the reference as invalid. Do not load metadata from a path with the suffix.
+	if isSelfRepositoryUsesWithRef(spec.Value) {
+		return NewMapObjectType(StringType{})
+	}
+
+	if _, ok := localUsesSpec(spec.Value); ok {
 		meta, _, err := rule.localActions.FindMetadata(spec.Value)
 		if err != nil {
 			rule.Error(spec.Pos, err.Error())
@@ -365,7 +370,7 @@ func (rule *RuleExpression) getWorkflowCallOutputsType(call *WorkflowCall) *Obje
 
 	// The workflow call rule reports a malformed local reference (e.g. with an @ref suffix, or no path),
 	// but it may not have run for the called job yet. Do not read a file that cannot be the workflow.
-	if strings.HasPrefix(call.Uses.Value, "./") && !isWorkflowCallUsesLocalFormat(call.Uses.Value) {
+	if _, ok := localUsesSpec(call.Uses.Value); ok && !isWorkflowCallUsesLocalFormat(call.Uses.Value) {
 		return NewMapObjectType(StringType{})
 	}
 

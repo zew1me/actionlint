@@ -1,0 +1,18 @@
+name: Greet
+description: An action in the defining repository
+inputs:
+  message:
+    description: Greeting message
+    required: true
+outputs:
+  greeting:
+    description: The greeting
+    value: ${{ steps.greet.outputs.greeting }}
+runs:
+  using: composite
+  steps:
+    - id: greet
+      shell: bash
+      run: echo "greeting=$MESSAGE" >> "$GITHUB_OUTPUT"
+      env:
+        MESSAGE: ${{ inputs.message }}
